@@ -47,6 +47,8 @@ export class AuthService {
 
     const validPassword = await compare(user.password, usuario.password);
 
+    console.log(validPassword);
+
     if (!validPassword) {
       throw new BadRequestException('Usuario o clave invalido');
     }

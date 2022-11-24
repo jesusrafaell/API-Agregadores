@@ -19,6 +19,10 @@ export interface RespTerm {
   code?: number;
 }
 
+export interface IPrefijoValue {
+  value: number;
+}
+
 @Injectable()
 export class TerminalsService {
   constructor(
@@ -61,8 +65,29 @@ export class TerminalsService {
 
     const aboNroCuenta = comerCuentaBanco || commerce.comerCuentaBanco;
 
+    //validar el prefijo
     let termAPt: string[];
     try {
+      console.log('antes');
+      const resPref: AxiosResponse<{ Data: IPrefijoValue[] }> =
+        await axios.post(
+          `${REACT_APP_APIURL_APT}pref`,
+          {
+            name: header.agr,
+          },
+          { headers: { authorization: header.token } },
+        );
+      console.log('des');
+      const prefijos = resPref.data.Data;
+      console.log(prefijos);
+      const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
+      console.log('aquiii', validPrefijo);
+      if (!validPrefijo) {
+        throw new BadRequestException({
+          message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
+        });
+      }
+
       const responseSP: AxiosResponse<{ Terminal: string[]; ok: boolean }> =
         await axios.post(
           `${REACT_APP_APIURL_APT}new`,
@@ -78,8 +103,11 @@ export class TerminalsService {
       termAPt = responseSP.data.Terminal[0].split(',');
 
       console.log(termAPt);
-      console.log('Res Exec', responseSP);
+      //console.log('Res Exec', responseSP);
     } catch (err) {
+      throw new BadRequestException({
+        message: err.message || 'Error APT',
+      });
       console.log(err);
     }
 
