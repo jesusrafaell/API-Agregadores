@@ -39,9 +39,6 @@ export default class Usuarios {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @Column({ nullable: false })
-  estatus!: number;
-
   @ManyToOne(() => Status, (status) => status.usuarios)
   status!: Status;
 

@@ -6,13 +6,13 @@ import SitranDS from './sitran_dataSource';
 
 export const Conections = async () => {
   await SitranDS.initialize();
-  console.log('Sitran OK  ✅');
+  console.log('Sitran    OK ✅');
   await CarropagoDS.initialize();
-  console.log('Carropago OK  ✅');
+  console.log('Carropago OK ✅');
   await LibrepagoDS.initialize();
   console.log('Librepago OK ✅');
   await MilPagosDS.initialize();
-  console.log('MilPagos OK ✅');
+  console.log('MilPagos  OK ✅');
   // await GSComputerDS.initialize();
   // console.log('GSComputer OK  ✅');
 };

@@ -4,7 +4,6 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
-  Param,
 } from '@nestjs/common';
 import { LoginUsuarioDto, Token } from '../dto/login-usuario.dto';
 import { AuthService } from '../services/auth.service';
@@ -19,14 +18,3 @@ export class AuthController {
     return this.authService.login(login);
   }
 }
-
-/*
-    switch (agr) {
-      case 'librepago':
-        return this.authService.login(login, agr);
-      case 'carropago':
-        return this.authService.login(login, agr);
-      default:
-        throw new UnauthorizedException(`Agregador [${agr}] no existe`);
-    }
-*/

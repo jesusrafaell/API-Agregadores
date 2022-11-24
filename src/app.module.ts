@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { CommerceModule } from './commerce/commerce.module';
+import { TerminalsModule } from './terminals/terminals.module';
 import { TestApiModule } from './testAPI/testAPi.module';
 
 @Module({
@@ -9,7 +10,7 @@ import { TestApiModule } from './testAPI/testAPi.module';
     TestApiModule,
     AuthModule,
     CommerceModule,
-    // TerminalsModule,
+    TerminalsModule,
     // AbonoModule,
   ],
 })

@@ -43,6 +43,7 @@ export class LogsService {
     return {
       DS: getDatasource(Number(agr.id)),
       agr: agr.name as string,
+      token,
       log: {
         id: sub,
         method: req.method,

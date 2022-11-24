@@ -1,8 +1,9 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import Abonos from '../db/models/abono.entity';
 import Comercios from '../db/models/comercios.entity';
+import Bancos from '../db/models/bancos.entity';
+import { isValid } from '../utils/functions/validAcoountBank';
 
 export interface RespAbono {
   message: string;
@@ -13,20 +14,19 @@ export interface RespAbono {
 
 @Injectable()
 export class AbonoService {
-  constructor(
-    @InjectRepository(Abonos)
-    private readonly _abonoRepository: Repository<Abonos>,
-  ) {}
+  // constructor() {}
 
   async createAbono(
     terminals: string[],
     commerce: Comercios,
     cxaCodAfi: string,
+    aboNroCuenta: string,
+    DS: DataSource,
   ): Promise<RespAbono> {
     try {
       console.log('crear abono');
 
-      const exist_termianls = await this._abonoRepository
+      const exist_termianls = await DS.getRepository(Abonos)
         .createQueryBuilder('abonos')
         .select('abonos.aboTerminal')
         .where('abonos.aboTerminal IN (:...terminals)', { terminals })
@@ -37,12 +37,14 @@ export class AbonoService {
           !exist_termianls.find((terminal) => terminal.aboTerminal === term),
       );
 
+      const aboCodBanco = aboNroCuenta.slice(0, 4);
+
       const abono: Abonos[] = newTerminals.map((terminal: string) => ({
         aboTerminal: terminal,
         aboCodAfi: cxaCodAfi,
         aboCodComercio: commerce.comerCod,
-        aboCodBanco: commerce.comerCodigoBanco,
-        aboNroCuenta: commerce.comerCuentaBanco,
+        aboCodBanco: aboCodBanco,
+        aboNroCuenta: aboNroCuenta,
         aboTipoCuenta: '01',
         estatusId: 23,
       }));
@@ -50,7 +52,7 @@ export class AbonoService {
       console.log('nuevos', newTerminals);
       console.log('existe', exist_termianls);
 
-      const abonosSaves = await this._abonoRepository.save(abono);
+      const abonosSaves = await DS.getRepository(Abonos).save(abono);
 
       const info: RespAbono = {
         message: '',
@@ -72,5 +74,31 @@ export class AbonoService {
         code: 400,
       };
     }
+  }
+
+  async validAccountNumber(
+    comerCuentaBanco: string,
+    DS: DataSource,
+  ): Promise<Bancos> {
+    const aboCodBanco = comerCuentaBanco.slice(0, 4);
+
+    const validBank = await DS.getRepository(Bancos).findOne({
+      where: { banCodBan: aboCodBanco },
+    });
+
+    if (!validBank) {
+      console.log(`Code Bank invalid [${aboCodBanco}]`);
+      throw new BadRequestException(`Code Bank invalid [${aboCodBanco}]`);
+    }
+
+    if (!isValid(comerCuentaBanco)) {
+      console.log(
+        `Codigo de Control Invalido [${comerCuentaBanco}], banco: [${validBank.banDescBan}]`,
+      );
+      throw new BadRequestException(
+        `Codigo de Control Invalido [${comerCuentaBanco}], banco: [${validBank.banDescBan}]`,
+      );
+    }
+    return validBank;
   }
 }

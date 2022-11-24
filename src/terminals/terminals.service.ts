@@ -4,12 +4,13 @@ import {
   NotFoundException, //404
 } from '@nestjs/common';
 import { CommerceService } from '../commerce/commerce.service';
-import 'dotenv/config';
 import { AbonoService, RespAbono } from '../abono/abono.service';
-import formatTerminals from '../utils/formatTerminals';
-import { DataSource } from 'typeorm';
 import { LogsService } from '../logs/logs.service';
-import LibrepagoDS from '../db/config/dataSource/librePago';
+
+import 'dotenv/config';
+import axios, { AxiosResponse } from 'axios';
+import { Header } from '../logs/dto/dto-logs.dto';
+const { REACT_APP_APIURL_APT } = process.env;
 
 export interface RespTerm {
   message: string;
@@ -21,7 +22,6 @@ export interface RespTerm {
 @Injectable()
 export class TerminalsService {
   constructor(
-    private dataSource: DataSource,
     private logService: LogsService,
     private commerceService: CommerceService,
     private abonoService: AbonoService,
@@ -30,25 +30,24 @@ export class TerminalsService {
   async createTerminals(
     comerRif: string,
     comerCantPost: number,
-    log: any,
+    comerCuentaBanco: string,
+    prefijo: string,
+    header: Header,
   ): Promise<RespTerm> {
     console.log(comerRif, comerCantPost);
-    //validar si exsite el comercio
-    //[3312]
-    const commerce = await this.commerceService.getCommerce(
-      comerRif,
-      LibrepagoDS,
-    );
+    const { DS } = header;
+
+    const commerce = await this.commerceService.getCommerce(comerRif, DS);
 
     if (!commerce)
       throw new BadRequestException(
         `Comercio [${comerRif}] no se encuentra registrado`,
       );
     //verificar el numero de afiliado del comercio
+    //3312
     const afiliado = await this.commerceService.getAfiliadoByCommerce(
       commerce.comerCod,
-      //3312
-      LibrepagoDS,
+      DS,
     );
 
     if (!afiliado)
@@ -57,70 +56,58 @@ export class TerminalsService {
       );
 
     console.log('Afiliado', Number(afiliado.cxaCodAfi));
+    if (comerCuentaBanco)
+      await this.abonoService.validAccountNumber(comerCuentaBanco, DS);
 
-    const responseSP = await this.dataSource.query(
-      `EXEC SP_new_terminal 
-			@Cant_Term = ${comerCantPost},
-			@Afiliado = '${Number(afiliado.cxaCodAfi)}',
-			@NombreComercio = '${commerce.comerDesc}',
-			@Proveedor = 8,
-			@TipoPos = 'ICT220 Dual',
-			@Modo = 'Comercio',
-			@TecladoAbierto = 0,
-			@Observaciones = '${
-        commerce.comerObservaciones ? commerce.comerObservaciones : ''
-      }',
-			@UsuarioResponsable = 'API Librepago'`,
-    );
+    const aboNroCuenta = comerCuentaBanco || commerce.comerCuentaBanco;
 
-    const info: RespTerm = {
-      message: '',
-    };
+    let termAPt: string[];
+    try {
+      const responseSP: AxiosResponse<{ Terminal: string[]; ok: boolean }> =
+        await axios.post(
+          `${REACT_APP_APIURL_APT}new`,
+          {
+            afiliado: `${Number(afiliado.cxaCodAfi)}`,
+            cantidad: comerCantPost,
+            prefijo,
+          },
+          { headers: { authorization: header.token } },
+        );
+      console.log('APT api', responseSP.data.Terminal[0]);
 
-    console.log('Res Exec', responseSP);
-    if (!responseSP || !responseSP.length) {
-      throw new NotFoundException(
-        'Vuelva a intentar esta accion en 10 minutos, estamos creando terminales',
-      );
+      termAPt = responseSP.data.Terminal[0].split(',');
+
+      console.log(termAPt);
+      console.log('Res Exec', responseSP);
+    } catch (err) {
+      console.log(err);
+    }
+
+    if (!termAPt.length) {
+      throw new NotFoundException('No hay termianles disponibles');
     } else {
-      const nroTerminals = formatTerminals(responseSP);
-      console.log('termianles', nroTerminals);
-      //
       const abono: RespAbono = await this.abonoService.createAbono(
-        nroTerminals,
+        termAPt,
         commerce,
         afiliado.cxaCodAfi,
+        aboNroCuenta,
+        DS,
       );
       if (!abono || abono.code === 400) {
         throw new BadRequestException({
           message: `Error al crear abono a los terminales, por favor contactar a Tranred`,
-          terminales: nroTerminals,
+          terminales: termAPt,
         });
       }
 
-      if (responseSP.length < comerCantPost) {
-        info.message =
-          abono.message +
-          (abono.terminales.length > 0 &&
-            `, solo teniamos disponibles ${responseSP.length} espere 10 minutos`);
-        info.code = 203;
-        info.terminales = abono.terminales;
-
-        //
-        log.msg = info.message;
-        await this.logService.saveLogsToken(log);
-
-        return info;
-      } else {
-        if (abono.terminales.length > 0) {
-          log.msg = abono.message;
-          await this.logService.saveLogsToken(log);
-          return abono;
-        }
-        throw new BadRequestException({
-          message: abono.message,
-        });
+      if (abono.terminales.length > 0) {
+        header.log.msg = `Se crearon ${termAPt.length} terminales`;
+        await this.logService.saveLogs(header.log, DS);
+        return abono;
       }
+      throw new BadRequestException({
+        message: abono.message,
+      });
     }
   }
 }

@@ -10,13 +10,18 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { Header } from '../logs/dto/dto-logs.dto';
+import { LogsService } from '../logs/logs.service';
 import { CreateTerminalsDto } from './dto/create-terminals.dto';
 import { RespTerm, TerminalsService } from './terminals.service';
 
 @UsePipes(ValidationPipe)
 @Controller('terminal')
 export class TerminalsController {
-  constructor(private readonly _TerminalsService: TerminalsService) {}
+  constructor(
+    private readonly _TerminalsService: TerminalsService,
+    private readonly logService: LogsService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
@@ -25,16 +30,13 @@ export class TerminalsController {
     @Req() req: Request,
     @Body() body: CreateTerminalsDto,
   ): Promise<RespTerm> {
-    const log: any = {
-      token,
-      method: req.method,
-      path: req.url,
-      msg: '',
-    };
+    const header: Header = this.logService.getDataToken(token, req);
     return this._TerminalsService.createTerminals(
       body.comerRif,
       body.comerCantPost,
-      log,
+      body.comerCuentaBanco,
+      body.prefijo,
+      header,
     );
   }
 }

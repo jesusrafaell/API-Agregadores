@@ -1,6 +1,7 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   Validate,
@@ -18,4 +19,14 @@ export class CreateTerminalsDto {
   @IsNumber()
   @IsNotEmpty()
   comerCantPost!: number;
+
+  @IsOptional()
+  @IsString()
+  @Length(20, 20, error.cuentaBanco)
+  comerCuentaBanco?: string;
+
+  @IsString()
+  @IsNotEmpty(error.textNotEmpty)
+  @Length(2, 2, error.textLength)
+  prefijo!: string;
 }
