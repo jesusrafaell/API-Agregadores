@@ -14,6 +14,9 @@ import afiliado_api from '../db/models/afiliados_api.entity';
 import Bancos from '../db/models/bancos.entity';
 import ComisionesMilPagos from '../db/models/comisionesmilpagos.entity';
 import { Header } from '../logs/dto/dto-logs.dto';
+import { ICommerceGet } from './dto';
+import { AbonoService } from '../abono/abono.service';
+import { TerminalSPAux } from '../terminals/dto';
 
 export interface Resp {
   message?: string;
@@ -21,7 +24,10 @@ export interface Resp {
 
 @Injectable()
 export class CommerceService {
-  constructor(private logService: LogsService) {}
+  constructor(
+    private logService: LogsService,
+    private _abonoService: AbonoService,
+  ) {}
 
   async getCategoriaByAfiliado(
     catCodAfi: string,
@@ -194,5 +200,65 @@ export class CommerceService {
     return await DS.getRepository(ComerciosXafiliado).findOne({
       where: { cxaCodComer },
     });
+  }
+
+  async getCommerceData(
+    comerRif: string,
+    header: Header,
+  ): Promise<ICommerceGet> {
+    const { DS } = header;
+    const comercio: Comercios = await DS.getRepository(Comercios).findOne({
+      where: { comerRif },
+    });
+
+    if (!comercio)
+      throw new BadRequestException(`Comercio [${comerRif}] no existe`);
+
+    const contact = await DS.getRepository(Contactos).findOne({
+      where: {
+        contCodComer: comercio.comerCod,
+      },
+    });
+
+    if (!contact)
+      throw { message: `Contacto del comercio ${comerRif} no existe` };
+
+    const abonos = await this._abonoService.getAbonosByCommerce(
+      comercio.comerCod,
+      DS,
+    );
+
+    const terminalsWithStatus: TerminalSPAux[] = [];
+    if (abonos.length) {
+      for (let i = 0; i < abonos.length; i++) {
+        const terminal = abonos[i];
+        //console.log(terminal);
+        //[3312] soon
+        // const resSP = await this.dataSource.query(
+        //   `EXEC SP_ConsultaTerminal '${terminal.aboTerminal}' `,
+        // );
+        // console.log('_Commerce Res SP_ConsultaTerminal', resSP);
+        // if (resSP.length) {
+        // const term: TerminalSP = {
+        //   terminal: terminal.aboTerminal,
+        //   active: resSP[0].term_active,
+        //   nroCuenta: terminal.aboNroCuenta,
+        // // };
+        terminalsWithStatus.push({
+          terminal: terminal.aboTerminal,
+          nroCuenta: terminal.aboNroCuenta,
+        });
+      }
+    }
+    const info = {
+      message: `Data comercio`,
+      comerRif: comercio.comerRif,
+      nombre: comercio.comerDesc,
+      email: contact.contMail,
+      fecha: new Date(comercio.comerInicioContrato).toISOString().split('T')[0],
+      terminales: terminalsWithStatus,
+    };
+
+    return info;
   }
 }

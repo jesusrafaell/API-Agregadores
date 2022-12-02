@@ -18,7 +18,7 @@ export const Conections = async () => {
 };
 
 export const getDatasource = (agr: number): DataSource => {
-  console.log('get', agr);
+  // console.log('get', agr);
   switch (agr) {
     case 1:
       return CarropagoDS;

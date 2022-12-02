@@ -101,4 +101,16 @@ export class AbonoService {
     }
     return validBank;
   }
+
+  async getAbonosByCommerce(
+    comerCod: number,
+    DS: DataSource,
+  ): Promise<Abonos[]> {
+    return await DS.getRepository(Abonos).find({
+      select: ['aboTerminal', 'aboCodBanco', 'aboNroCuenta'],
+      where: {
+        aboCodComercio: comerCod,
+      },
+    });
+  }
 }

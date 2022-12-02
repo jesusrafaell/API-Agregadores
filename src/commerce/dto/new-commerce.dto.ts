@@ -1,6 +1,5 @@
 import {
   IsBoolean,
-  IsDefined,
   IsNotEmpty,
   IsNotEmptyObject,
   IsNumber,
@@ -13,9 +12,6 @@ import {
 } from '@nestjs/class-validator';
 import { Type } from 'class-transformer';
 import {
-  Max,
-  Min,
-  ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
@@ -23,9 +19,8 @@ import error from './messages-validator';
 
 @ValidatorConstraint({ name: 'customText', async: false })
 export class RifValidation implements ValidatorConstraintInterface {
-  validate(text: string, args: ValidationArguments) {
-    const numeros = '0123456789';
-    return !(numeros.indexOf(text[0]) != -1);
+  validate(text: string) {
+    return /(^[VEJR]{1})([0-9]+$)/.test(text);
   }
 
   defaultMessage() {
@@ -35,7 +30,7 @@ export class RifValidation implements ValidatorConstraintInterface {
 
 @ValidatorConstraint({ name: 'customRange', async: false })
 export class SizeOneOrTwo implements ValidatorConstraintInterface {
-  validate(num: number, args: ValidationArguments) {
+  validate(num: number) {
     return num == 1 || num == 2;
   }
 
