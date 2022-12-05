@@ -9,12 +9,11 @@ import ComerciosXafiliado from '../db/models/comerciosXafliado.entity';
 import CategoriasXafiliado from '../db/models/categoriasXafiliado.entity';
 import Afiliados from '../db/models/afiliados.entity';
 import { LogsService } from '../logs/logs.service';
-import { getDatasource } from '../db/config';
 import afiliado_api from '../db/models/afiliados_api.entity';
 import Bancos from '../db/models/bancos.entity';
 import ComisionesMilPagos from '../db/models/comisionesmilpagos.entity';
 import { Header } from '../logs/dto/dto-logs.dto';
-import { ICommerceGet } from './dto';
+import { ICommerceAll, ICommerceGet } from './dto';
 import { AbonoService } from '../abono/abono.service';
 import { TerminalSPAux } from '../terminals/dto';
 
@@ -232,18 +231,6 @@ export class CommerceService {
     if (abonos.length) {
       for (let i = 0; i < abonos.length; i++) {
         const terminal = abonos[i];
-        //console.log(terminal);
-        //[3312] soon
-        // const resSP = await this.dataSource.query(
-        //   `EXEC SP_ConsultaTerminal '${terminal.aboTerminal}' `,
-        // );
-        // console.log('_Commerce Res SP_ConsultaTerminal', resSP);
-        // if (resSP.length) {
-        // const term: TerminalSP = {
-        //   terminal: terminal.aboTerminal,
-        //   active: resSP[0].term_active,
-        //   nroCuenta: terminal.aboNroCuenta,
-        // // };
         terminalsWithStatus.push({
           terminal: terminal.aboTerminal,
           nroCuenta: terminal.aboNroCuenta,
@@ -260,5 +247,21 @@ export class CommerceService {
     };
 
     return info;
+  }
+
+  async getAllCommerce(header: Header): Promise<ICommerceAll> {
+    const { DS } = header;
+    const commerces = await DS.getRepository(Comercios).find({
+      select: ['comerRif', 'comerDesc'],
+    });
+
+    if (!commerces.length) {
+      throw new BadRequestException(`No existen comercios`);
+    }
+
+    return {
+      message: `Comercios`,
+      comercios: commerces,
+    };
   }
 }

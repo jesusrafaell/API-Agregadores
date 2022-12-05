@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Header, Log } from './dto/dto-logs.dto';
 import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -35,21 +35,25 @@ export class LogsService {
   }
 
   getDataToken = (headerToken: string, req: Request): Header => {
-    const token = headerToken.replace('Bearer ', '');
-    // console.log(token);
-    const decode = this.jwtService.decode(token);
-    const { sub, agr }: any = decode;
-    //console.log('agregador', agr);
-    return {
-      DS: getDatasource(Number(agr.id)),
-      agr: agr.name as string,
-      token,
-      log: {
-        id: sub,
-        method: req.method,
-        path: req.url,
-        msg: '',
-      },
-    };
+    try {
+      const token = headerToken.replace('Bearer ', '');
+      // console.log(token);
+      const decode = this.jwtService.decode(token);
+      const { sub, agr }: any = decode;
+      //console.log('agregador', agr);
+      return {
+        DS: getDatasource(Number(agr.id)),
+        agr: agr.name as string,
+        token,
+        log: {
+          id: sub,
+          method: req.method,
+          path: req.url,
+          msg: '',
+        },
+      };
+    } catch (err) {
+      throw new UnauthorizedException('Token invalido agregador');
+    }
   };
 }

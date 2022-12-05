@@ -1,0 +1,405 @@
+{
+	"info": {
+		"_postman_id": "a1eaea7c-d146-464e-92cb-94fb8d55606d",
+		"name": "API tranred",
+		"description": "Api carropago para la la base de datos de carropago",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14984975"
+	},
+	"item": [
+		{
+			"name": "Comercio",
+			"item": [
+				{
+					"name": "Crear Comercio",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpYnJlcGFnb0Bjb3JyZW8uY29tIiwic3ViIjozLCJhZ3IiOnsiaWQiOjMsIm5hbWUiOiJMaWJyZXBhZ28iLCJrZXkiOjMsImFjdGl2ZSI6MX0sImlhdCI6MTY2ODAyODI5MSwiZXhwIjoxNjY4MDQyNjkxfQ.27r57QmQ2jxqudnMtDRRg4dnLFcd-eCRK5Hq0c9UvmI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"commerce\": { \r\n        \"comerRif\": \"V352334111\",\r\n        \"comerTipoPer\": 1,\r\n\t\t\"idActivityXAfiliado\": \"000000722000033\",\r\n\t\t\"comerDesc\": \"Api carro Pago Test\",\r\n\t\t\"comerCuentaBanco\": \"01021234567891044348\",\r\n\t\t\"comerCodTipoCont\": 1,\r\n\t\t\"comerObservaciones\": \"\",\r\n\t\t\"locationCommerce\": {\r\n\t\t\t\"estado\": \"Distrito Capital\",\r\n\t\t\t\"municipio\": \"LIBERTADOR\",\r\n\t\t\t\"ciudad\": \"Barrio 1\",\r\n\t\t\t\"parroquia\": \"CATEDRAL\",\r\n\t\t\t\"casa\": \"Local1\"\r\n\t\t},\r\n\t\t\"locationContact\": {\r\n\t\t\t\"estado\": \"Distrito Capital\",\r\n\t\t\t\"municipio\": \"LIBERTADOR\",\r\n\t\t\t\"ciudad\": \"Barrio 1\",\r\n\t\t\t\"parroquia\": \"CATEDRAL2\",\r\n\t\t\t\"casa\": \"11-12\"\r\n\t\t},\r\n\t\t\"locationPos\": {\r\n\t\t\t\"estado\": \"Distrito Capital\",\r\n\t\t\t\"municipio\": \"LIBERTADOR\",\r\n\t\t\t\"ciudad\": \"Barrio 1\",\r\n\t\t\t\"parroquia\": \"CATEDRAL3\",\r\n\t\t\t\"casa\": \"Local1\"\r\n\t\t},\r\n\t\t\"daysOperacion\": {\r\n\t\t\t\"Lun\": true,\r\n\t\t\t\"Mar\": true,\r\n\t\t\t\"Mie\": true,\r\n\t\t\t\"Jue\": true,\r\n\t\t\t\"Vie\": true,\r\n\t\t\t\"Sab\": true,\r\n\t\t\t\"Dom\": true\r\n\t\t}\r\n\t},\r\n\t\"contacto\": {\r\n\t\t\"contNombres\": \"Carlos\",\r\n\t\t\"contApellidos\": \"Gonzalez\",\r\n\t\t\"contTelefLoc\": \"02126889569\",\r\n\t\t\"contTelefMov\": \"04126889569\",\r\n\t\t\"contMail\": \"carlitos2@correo.com\"\r\n\t}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/commerce/create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"commerce",
+								"create"
+							]
+						},
+						"description": "Crea comercio:  \nidActivityXAfiliado: es el numero de afiliado de la actvidad comercial  \ncomerDesc: nombre del comercio  \ncomerTipoPer: tipo de persona o comercio  \ncomerCuentaBanco: numero de cuenta  \ncomerRif: rif del comercio  \ncomerCodTipoCont: tipo de contrato si es temporal o permanente  \ncomerObservaciones: texto de informacion especial del comercio  \nlocationCommerce: Object con las ubicacion del comercio { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocationContact: Object con las ubicacion del contacto { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocaitonPos: Object con las ubicacion de donde se ubicara el pos { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \ndaysOperacion: Object con los dias de la semana donde se coloca en true los dija que trabaja el comercio y false los dias que no  \ncontacto: Objecto con la info del contacto  \ncontNombres: nombres del contacto  \ncontApellidos: apellidos del contacto  \ncontTelefLoc: numero local de tlf del contacto  \ncontTelefMov: numero movil de tlf del contacto  \ncontMail: email del contacto  \n//  \nRespuesta:  \nmessage: un mensaje si el comercio se creo o ya existia"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Comercio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhcnJvcGFnb0Bjb3JyZW8uY29tIiwic3ViIjo0LCJhZ3IiOnsiaWQiOjEsIm5hbWUiOiJDYXJyb3BhZ28iLCJrZXkiOjEsImFjdGl2ZSI6MX0sImlhdCI6MTY3MDI2MzQ4NywiZXhwIjoxNjcwMjc3ODg3fQ.yCYLqsD2aN9EgdMJe03yW4_eCkSIv49cAT2S8g0cpUY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/commerce/rif/V24757906",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"commerce",
+								"rif",
+								"V24757906"
+							]
+						},
+						"description": "Crea comercio:  \nidActivityXAfiliado: es el numero de afiliado de la actvidad comercial  \ncomerDesc: nombre del comercio  \ncomerTipoPer: tipo de persona o comercio  \ncomerCuentaBanco: numero de cuenta  \ncomerRif: rif del comercio  \ncomerCodTipoCont: tipo de contrato si es temporal o permanente  \ncomerObservaciones: texto de informacion especial del comercio  \nlocationCommerce: Object con las ubicacion del comercio { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocationContact: Object con las ubicacion del contacto { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocaitonPos: Object con las ubicacion de donde se ubicara el pos { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \ndaysOperacion: Object con los dias de la semana donde se coloca en true los dija que trabaja el comercio y false los dias que no  \ncontacto: Objecto con la info del contacto  \ncontNombres: nombres del contacto  \ncontApellidos: apellidos del contacto  \ncontTelefLoc: numero local de tlf del contacto  \ncontTelefMov: numero movil de tlf del contacto  \ncontMail: email del contacto  \n//  \nRespuesta:  \nmessage: un mensaje si el comercio se creo o ya existia"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Comercios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhcnJvcGFnb0Bjb3JyZW8uY29tIiwic3ViIjo0LCJhZ3IiOnsiaWQiOjEsIm5hbWUiOiJDYXJyb3BhZ28iLCJrZXkiOjEsImFjdGl2ZSI6MX0sImlhdCI6MTY3MDI2MzQ4NywiZXhwIjoxNjcwMjc3ODg3fQ.yCYLqsD2aN9EgdMJe03yW4_eCkSIv49cAT2S8g0cpUY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/commerce/all",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"commerce",
+								"all"
+							]
+						},
+						"description": "Crea comercio:  \nidActivityXAfiliado: es el numero de afiliado de la actvidad comercial  \ncomerDesc: nombre del comercio  \ncomerTipoPer: tipo de persona o comercio  \ncomerCuentaBanco: numero de cuenta  \ncomerRif: rif del comercio  \ncomerCodTipoCont: tipo de contrato si es temporal o permanente  \ncomerObservaciones: texto de informacion especial del comercio  \nlocationCommerce: Object con las ubicacion del comercio { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocationContact: Object con las ubicacion del contacto { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocaitonPos: Object con las ubicacion de donde se ubicara el pos { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \ndaysOperacion: Object con los dias de la semana donde se coloca en true los dija que trabaja el comercio y false los dias que no  \ncontacto: Objecto con la info del contacto  \ncontNombres: nombres del contacto  \ncontApellidos: apellidos del contacto  \ncontTelefLoc: numero local de tlf del contacto  \ncontTelefMov: numero movil de tlf del contacto  \ncontMail: email del contacto  \n//  \nRespuesta:  \nmessage: un mensaje si el comercio se creo o ya existia"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Creacion de usuarios",
+			"item": [
+				{
+					"name": "Crear Comercio",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGNvcnJlby5jb20iLCJwcm9maWxlIjp7ImlkIjoxMSwiY3JlYXRlZEF0IjoiMjAyMi0xMS0wOVQyMjoyNjoxMS43MjNaIiwidXBkYXRlZEF0IjoiMjAyMi0xMS0wOVQyMjoyNjoxMS43MjNaIiwiZGVwYXJ0bWVudCI6eyJpZCI6MiwibmFtZSI6IlNlZ3VyaWRhZCIsImFjdGl2ZSI6MX0sInJvbCI6eyJpZCI6NCwibmFtZSI6IkFkbWluIiwiYWN0aXZlIjoxfX0sImlhdCI6MTY2ODQ0MzY0NywiZXhwIjoxNjY4NDU4MDQ3fQ.5gh9xn1evrtBxOiHedtxyvSc4OcT9BC1vHWBSPL-AbY",
+								"type": "text"
+							},
+							{
+								"key": "key_agregador",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Nuevo Usuario\",\r\n  \"login\": \"nuevo_usuario\",\r\n  \"email\": \"nuevo@correo.com\",\r\n  \"rol\": {\r\n    \"id\": 2,\r\n    \"name\": \"Seguridad\",\r\n    \"active\": 1\r\n  },\r\n  \"dep\": {\r\n    \"id\": 2,\r\n    \"name\": \"Trabajador\",\r\n    \"active\": 1\r\n  },\r\n  \"type_doc\": \"V\",\r\n  \"doc\": \"25888444\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:2022/seguridad/create/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "2022",
+							"path": [
+								"seguridad",
+								"create",
+								"user"
+							]
+						},
+						"description": "Crea comercio:  \nidActivityXAfiliado: es el numero de afiliado de la actvidad comercial  \ncomerDesc: nombre del comercio  \ncomerTipoPer: tipo de persona o comercio  \ncomerCuentaBanco: numero de cuenta  \ncomerRif: rif del comercio  \ncomerCodTipoCont: tipo de contrato si es temporal o permanente  \ncomerObservaciones: texto de informacion especial del comercio  \nlocationCommerce: Object con las ubicacion del comercio { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocationContact: Object con las ubicacion del contacto { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocaitonPos: Object con las ubicacion de donde se ubicara el pos { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \ndaysOperacion: Object con los dias de la semana donde se coloca en true los dija que trabaja el comercio y false los dias que no  \ncontacto: Objecto con la info del contacto  \ncontNombres: nombres del contacto  \ncontApellidos: apellidos del contacto  \ncontTelefLoc: numero local de tlf del contacto  \ncontTelefMov: numero movil de tlf del contacto  \ncontMail: email del contacto  \n//  \nRespuesta:  \nmessage: un mensaje si el comercio se creo o ya existia"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Comercio",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpYnJlcGFnb0Bjb3JyZW8uY29tIiwic3ViIjoxNjMsImlhdCI6MTY2NzgzNjI3MCwiZXhwIjoxNjY3ODUwNjcwfQ.Fc-cj9kOLKvBoSxRdnvreeQWZghNCLJ3eBhjPLAv8dQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/commerce/rif/JJ424242",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"commerce",
+								"rif",
+								"JJ424242"
+							]
+						},
+						"description": "Crea comercio:  \nidActivityXAfiliado: es el numero de afiliado de la actvidad comercial  \ncomerDesc: nombre del comercio  \ncomerTipoPer: tipo de persona o comercio  \ncomerCuentaBanco: numero de cuenta  \ncomerRif: rif del comercio  \ncomerCodTipoCont: tipo de contrato si es temporal o permanente  \ncomerObservaciones: texto de informacion especial del comercio  \nlocationCommerce: Object con las ubicacion del comercio { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocationContact: Object con las ubicacion del contacto { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \nlocaitonPos: Object con las ubicacion de donde se ubicara el pos { estado, municipio, ciudad, parroquia, casa (nro casa, local o nombre de la casa)  \ndaysOperacion: Object con los dias de la semana donde se coloca en true los dija que trabaja el comercio y false los dias que no  \ncontacto: Objecto con la info del contacto  \ncontNombres: nombres del contacto  \ncontApellidos: apellidos del contacto  \ncontTelefLoc: numero local de tlf del contacto  \ncontTelefMov: numero movil de tlf del contacto  \ncontMail: email del contacto  \n//  \nRespuesta:  \nmessage: un mensaje si el comercio se creo o ya existia"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"s_librep\",\r\n    \"password\": \"Tranred.18!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "auth/login se indica el username y el password del usuario de la API (dicho usuario tiene el perfil \"API\" para tener acceso a la api) este endpoint retorna un access_token (token de acceso para los endpoint), este token solo dura solo 4h."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Terminales",
+			"item": [
+				{
+					"name": "Crear Terminales",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpYnJlcGFnb0Bjb3JyZW8uY29tIiwic3ViIjozLCJhZ3IiOnsiaWQiOjMsIm5hbWUiOiJMaWJyZXBhZ28iLCJrZXkiOjMsImFjdGl2ZSI6MX0sImlhdCI6MTY2OTMyMDk0MSwiZXhwIjoxNjY5MzM1MzQxfQ.FQ0vyk8ABlW05ul3QZyEcSbsKkzfYpSouW9kKux5Qc4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comerRif\": \"V20329287\",\r\n    \"comerCuentaBanco\": \"01340497634971022797\",\r\n    \"prefijo\": \"56\",\r\n    \"comerCantPost\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/terminal/create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"terminal",
+								"create"
+							]
+						},
+						"description": "Crear terminales:\n//Request\ncomerRif: rif del comercio\ncomerCantPos: numero de terminales a crear\n//Respuesta\nmessage: un mensaje si se crearon o no la terminales\ntermianls: lista del numero de terminales creadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Editar numero de cuenta",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpYnJlcGFnb0Bjb3JyZW8uY29tIiwic3ViIjoxNjMsImlhdCI6MTY2NzgzNjI3MCwiZXhwIjoxNjY3ODUwNjcwfQ.Fc-cj9kOLKvBoSxRdnvreeQWZghNCLJ3eBhjPLAv8dQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"comerCuentaBanco\": \"01021234567891044348\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/abono/bank/01002431",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"abono",
+								"bank",
+								"01002431"
+							]
+						},
+						"description": "Crear terminales:\n//Request\ncomerRif: rif del comercio\ncomerCantPos: numero de terminales a crear\n//Respuesta\nmessage: un mensaje si se crearon o no la terminales\ntermianls: lista del numero de terminales creadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"s_librep\",\r\n    \"password\": \"Tranred.18!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8000/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "auth/login se indica el username y el password del usuario de la API (dicho usuario tiene el perfil \"API\" para tener acceso a la api) este endpoint retorna un access_token (token de acceso para los endpoint), este token solo dura solo 4h."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

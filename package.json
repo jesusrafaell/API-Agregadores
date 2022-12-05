@@ -11,6 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:dev:qa": "env-cmd -f .env.development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:qa": "env-cmd -f .env.development node dist/main",
     "start:prod": "env-cmd -f .env.production node dist/main",

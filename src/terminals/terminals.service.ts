@@ -10,6 +10,8 @@ import { LogsService } from '../logs/logs.service';
 import 'dotenv/config';
 import axios, { AxiosResponse } from 'axios';
 import { Header } from '../logs/dto/dto-logs.dto';
+import Abonos from '../db/models/abono.entity';
+import { ITerminalAll } from './dto';
 const { REACT_APP_APIURL_APT } = process.env;
 
 export interface RespTerm {
@@ -137,5 +139,21 @@ export class TerminalsService {
         message: abono.message,
       });
     }
+  }
+
+  async getAllTerminals(header: Header): Promise<ITerminalAll> {
+    const { DS } = header;
+    const termianls = await DS.getRepository(Abonos).find({
+      select: ['aboTerminal', 'aboCodAfi', 'aboNroCuenta'],
+    });
+
+    if (!termianls.length) {
+      throw new BadRequestException(`No existen terminales en abono`);
+    }
+
+    return {
+      message: `Todas las Terminales`,
+      terminales: termianls,
+    };
   }
 }

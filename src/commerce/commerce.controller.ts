@@ -16,17 +16,17 @@ import { CommerceService, Resp } from './commerce.service';
 import { Request } from 'express';
 import { LogsService } from '../logs/logs.service';
 import { Header } from '../logs/dto/dto-logs.dto';
-import { ICommerceGet, RifDto } from './dto';
+import { ICommerceAll, ICommerceGet, RifDto } from './dto';
 
 @UsePipes(ValidationPipe)
 @Controller('commerce')
+@UseGuards(JwtAuthGuard)
 export class CommerceController {
   constructor(
     private readonly _commerceService: CommerceService,
     private readonly logService: LogsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
   createCommerce(
     @Headers('authorization') token: string,
@@ -46,5 +46,14 @@ export class CommerceController {
   ): Promise<ICommerceGet> {
     const header: Header = this.logService.getDataToken(token, req);
     return this._commerceService.getCommerceData(params.comerRif, header);
+  }
+
+  @Get('/all')
+  getAllCommerce(
+    @Headers('authorization') token: string,
+    @Req() req: Request,
+  ): Promise<ICommerceAll> {
+    const header: Header = this.logService.getDataToken(token, req);
+    return this._commerceService.getAllCommerce(header);
   }
 }

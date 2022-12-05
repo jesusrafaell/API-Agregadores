@@ -7,6 +7,7 @@ import {
   UseGuards,
   Post,
   Req,
+  Get,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
@@ -16,6 +17,7 @@ import { CreateTerminalsDto } from './dto/create-terminals.dto';
 import { RespTerm, TerminalsService } from './terminals.service';
 
 @UsePipes(ValidationPipe)
+@UseGuards(JwtAuthGuard)
 @Controller('terminal')
 export class TerminalsController {
   constructor(
@@ -23,7 +25,6 @@ export class TerminalsController {
     private readonly logService: LogsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
   createTerminals(
     @Headers('authorization') token: string,
@@ -38,5 +39,14 @@ export class TerminalsController {
       body.prefijo,
       header,
     );
+  }
+
+  @Get('all')
+  getAllTerminal(
+    @Headers('authorization') token: string,
+    @Req() req: Request,
+  ): Promise<RespTerm> {
+    const header: Header = this.logService.getDataToken(token, req);
+    return this._TerminalsService.getAllTerminals(header);
   }
 }
