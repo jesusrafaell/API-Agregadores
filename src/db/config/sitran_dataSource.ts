@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
-import { join } from 'path';
 
 const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } =
   process.env;

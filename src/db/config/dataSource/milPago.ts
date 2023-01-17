@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
-import { entitiesAgregadores } from '../parmetros.config';
+import {
+  entitiesAgregadores,
+  migrationsAgregadores,
+} from '../parmetros.config';
 import 'dotenv/config';
 
 const { DB_HOST_MIL, DB_USER_MIL, DB_PASS_MIL, DB_DATA_MIL } = process.env;
@@ -19,8 +22,9 @@ const MilPagosDS = new DataSource({
   migrationsRun: false,
   logging: false,
   entities: entitiesAgregadores,
-  migrations: ['./src/db/migrations/**/*.ts'],
+  migrations: migrationsAgregadores,
   subscribers: ['./src/db/subscriber/**/*.ts'],
+  migrationsTableName: 'migrations_api_v1',
 });
 
 export default MilPagosDS;

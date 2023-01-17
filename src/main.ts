@@ -14,7 +14,7 @@ async function bootstrap() {
     httpsOptions,
   });
 
-  await app.listen(8082);
+  await app.listen(5050);
   Conections().then(async () => {
     console.log(`
            #    ######  ###    ####### ######     #    #     # ######  ####### ######  

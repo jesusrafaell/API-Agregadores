@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Header, Log } from './dto/dto-logs.dto';
 import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -40,9 +44,14 @@ export class LogsService {
       // console.log(token);
       const decode = this.jwtService.decode(token);
       const { sub, agr }: any = decode;
+      const DS = getDatasource(Number(agr.id));
+      if (!DS) {
+        console.log('No existe el agreador');
+        throw new BadRequestException(`No existe el agreador`);
+      }
       //console.log('agregador', agr);
       return {
-        DS: getDatasource(Number(agr.id)),
+        DS: DS,
         agr: agr.name as string,
         token,
         log: {

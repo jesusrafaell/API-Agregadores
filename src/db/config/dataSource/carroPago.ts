@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
-import { entitiesAgregadores } from '../parmetros.config';
+import {
+  entitiesAgregadores,
+  migrationsAgregadores,
+} from '../parmetros.config';
 import 'dotenv/config';
 
 const { DB_HOST_CARRO, DB_USER_CARRO, DB_PASS_CARRO, DB_DATA_CARRO } =
@@ -20,8 +23,9 @@ const CarropagoDS = new DataSource({
   migrationsRun: false,
   logging: false,
   entities: entitiesAgregadores,
-  migrations: ['./db/migrations/**/*.ts'],
+  migrations: migrationsAgregadores,
   subscribers: ['./db/subscriber/**/*.ts'],
+  migrationsTableName: 'migrations_api_v1',
 });
 
 export default CarropagoDS;

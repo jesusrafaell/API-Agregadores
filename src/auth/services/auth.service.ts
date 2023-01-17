@@ -56,6 +56,8 @@ export class AuthService {
     if (!validPerfil) {
       throw new UnauthorizedException('Este Usuario no tiene acceso al API');
     }
+    console.log(usuario.agregador);
+
     const token = this.jwtLogin(usuario.email, usuario.id, usuario.agregador);
 
     const log: Log = {

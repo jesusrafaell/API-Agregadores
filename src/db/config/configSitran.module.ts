@@ -22,7 +22,7 @@ const configModule: DynamicModule[] = [
         trustServerCertificate: true,
       },
       //entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      autoLoadEntities: true,
+      // autoLoadEntities: true,
     }),
   }),
 ];

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('afiliados_api')
+@Entity('afiliados_api', { synchronize: true })
 export default class afiliado_api {
   @PrimaryGeneratedColumn()
   id?: string;

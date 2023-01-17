@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
-import { entitiesAgregadores } from '../parmetros.config';
+import {
+  entitiesAgregadores,
+  migrationsAgregadores,
+} from '../parmetros.config';
 import 'dotenv/config';
 
 const { DB_HOST_LIBRE, DB_USER_LIBRE, DB_PASS_LIBRE, DB_DATA_LIBRE } =
@@ -20,8 +23,9 @@ const LibrepagoDS = new DataSource({
   migrationsRun: false,
   logging: false,
   entities: entitiesAgregadores,
-  migrations: ['./db/migrations/**/*.ts'],
+  migrations: migrationsAgregadores,
   subscribers: ['./db/subscriber/**/*.ts'],
+  migrationsTableName: 'migrations_api_v1',
 });
 
 export default LibrepagoDS;
