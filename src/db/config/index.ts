@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import CarropagoDS from './dataSource/carroPago';
+import GSComputerDS from './dataSource/gscomputer';
 import LibrepagoDS from './dataSource/librePago';
-import MilPagosDS from './dataSource/milPago';
 import SitranDS from './sitran_dataSource';
 
 export const Conections = async () => {
@@ -13,8 +13,8 @@ export const Conections = async () => {
   console.log('Librepago ✅');
   // await MilPagosDS.initialize();
   // console.log('MilPagos  ✅');
-  // await GSComputerDS.initialize();
-  // console.log('GSComputer OK  ✅');
+  await GSComputerDS.initialize();
+  console.log('GSComputer OK  ✅');
 };
 
 export const getDatasource = (agr: number): DataSource => {
@@ -26,6 +26,8 @@ export const getDatasource = (agr: number): DataSource => {
     //   return MilPagosDS;
     case 3:
       return LibrepagoDS;
+    case 2:
+      return GSComputerDS;
     case 5:
       return SitranDS;
   }

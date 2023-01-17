@@ -38,8 +38,17 @@ export class CommerceController {
   }
 
   @Get('/rif/:comerRif')
-  @Post('/rif/:comerRif')
   getCommerce(
+    @Headers('authorization') token: string,
+    @Req() req: Request,
+    @Param() params: RifDto,
+  ): Promise<ICommerceGet> {
+    const header: Header = this.logService.getDataToken(token, req);
+    return this._commerceService.getCommerceData(params.comerRif, header);
+  }
+
+  @Post('/rif/:comerRif')
+  getCommercePost(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: RifDto,
