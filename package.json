@@ -41,7 +41,7 @@
     "gscomputer:revert": "env-cmd -f %npm_package_config_env% npx typeorm-ts-node-esm migration:revert -d ./src/db/config/dataSource/gscomputer.ts",
     "disglobal:revert": "env-cmd -f %npm_package_config_env% npx typeorm-ts-node-esm migration:revert -d ./src/db/config/dataSource/disglobal.ts",
     "consultel:revert": "env-cmd -f %npm_package_config_env% npx typeorm-ts-node-esm migration:revert -d ./src/db/config/dataSource/consultel.ts",
-    "migrate:preData": "ts-node src/db/contents/index.ts",
+    "migrate:preData": "env-cmd -f %npm_package_config_env% ts-node src/db/contents/index.ts",
     "migrate:show": "npx typeorm-ts-node-esm migration:show -d ./src/db/config/migracion.ts"
   },
   "dependencies": {
