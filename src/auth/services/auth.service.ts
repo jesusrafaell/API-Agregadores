@@ -3,7 +3,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginUsuarioDto, Token } from '../dto/login-usuario.dto';
+import {
+  LoginUsuarioDto,
+  ResAccesToken,
+  Token,
+} from '../dto/login-usuario.dto';
 import { exec } from 'child_process';
 import { JwtService } from '@nestjs/jwt';
 import { UsuariosService } from '../../usuarios/services/usuarios.service';
@@ -12,6 +16,7 @@ import { Log } from '../../logs/dto/dto-logs.dto';
 import Usuarios from '../../db/sitran/models/usuarios.entity';
 import { compare } from 'bcrypt';
 import Agregador from '../../db/sitran/models/agregador.entity';
+import SitranDS from '../../db/config/sitran_dataSource';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +45,7 @@ export class AuthService {
     };
   }
 
-  async login(user: LoginUsuarioDto): Promise<Token> {
+  async login(user: LoginUsuarioDto): Promise<ResAccesToken> {
     const usuario: Usuarios = await this.userService.getUsuario(user);
 
     if (!usuario) throw new UnauthorizedException('Usuario invalido');
@@ -58,7 +63,11 @@ export class AuthService {
     }
     // console.log(usuario.agregador);
 
-    const token = this.jwtLogin(usuario.email, usuario.id, usuario.agregador);
+    const token = await this.jwtLogin(
+      usuario.email,
+      usuario.id,
+      usuario.agregador,
+    );
 
     const log: Log = {
       id: usuario.id,
@@ -68,8 +77,11 @@ export class AuthService {
     };
 
     //[3312]
-    //await this.logService.saveLogs(log, DS);
+    await this.logService.saveLogs(log, SitranDS);
 
-    return token;
+    return {
+      agr: usuario.agregador.name,
+      access_token: token.access_token,
+    };
   }
 }

@@ -40,8 +40,8 @@ export class TerminalsService {
     prefijo: string,
     header: Header,
   ): Promise<RespTerm> {
-    console.log(comerRif, comerCantPost);
     const { DS } = header;
+    // console.log(comerRif, comerCantPost);
 
     const commerce = await this.commerceService.getCommerce(comerRif, DS);
 
@@ -70,7 +70,7 @@ export class TerminalsService {
     //validar el prefijo
     let termAPt: string[];
     try {
-      console.log('antes');
+      //console.log('antes');
       const resPref: AxiosResponse<{ Data: IPrefijoValue[] }> =
         await axios.post(
           `${REACT_APP_APIURL_APT}pref`,
@@ -79,32 +79,40 @@ export class TerminalsService {
           },
           { headers: { authorization: header.token } },
         );
-      console.log('des');
       const prefijos = resPref.data.Data;
-      console.log(prefijos);
+      console.log('Resp APT', prefijos);
       const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
-      console.log('aquiii', validPrefijo);
+      console.log(`Prefijo ${prefijo} -> ${validPrefijo ? 'Si' : 'No'}`);
       if (!validPrefijo) {
         throw new BadRequestException({
           message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
         });
       }
 
+      //crear terminal
+      console.log(`Crear  ${comerCantPost} Terminals`);
       const responseSP: AxiosResponse<{ Terminal: string[]; ok: boolean }> =
-        await axios.post(
-          `${REACT_APP_APIURL_APT}new`,
-          {
-            afiliado: `${Number(afiliado.cxaCodAfi)}`,
-            cantidad: comerCantPost,
-            prefijo,
-          },
-          { headers: { authorization: header.token } },
-        );
-      console.log('APT api', responseSP.data.Terminal[0]);
-
+        await axios
+          .post(
+            `${REACT_APP_APIURL_APT}new`,
+            {
+              afiliado: `${Number(afiliado.cxaCodAfi)}`,
+              cantidad: comerCantPost,
+              prefijo,
+            },
+            { headers: { authorization: header.token } },
+          )
+          .catch((err) => {
+            console.log('Error APT:', err);
+            console.log('aqui', err.response.data.originalError);
+            throw new BadRequestException({
+              message: 'APT: ' + err.message || 'Error APT',
+            });
+          });
       termAPt = responseSP.data.Terminal[0].split(',');
 
-      console.log(termAPt);
+      console.log('APT api', termAPt);
+
       //console.log('Res Exec', responseSP);
     } catch (err) {
       throw new BadRequestException({

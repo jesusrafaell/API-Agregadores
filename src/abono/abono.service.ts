@@ -26,20 +26,20 @@ export class AbonoService {
     try {
       console.log('crear abono');
 
-      const exist_termianls = await DS.getRepository(Abonos)
-        .createQueryBuilder('abonos')
-        .select('abonos.aboTerminal')
-        .where('abonos.aboTerminal IN (:...terminals)', { terminals })
-        .getMany();
+      // const exist_termianls = await DS.getRepository(Abonos)
+      //   .createQueryBuilder('abonos')
+      //   .select('abonos.aboTerminal')
+      //   .where('abonos.aboTerminal IN (:...terminals)', { terminals })
+      //   .getMany();
 
-      const newTerminals: string[] = terminals.filter(
-        (term: string) =>
-          !exist_termianls.find((terminal) => terminal.aboTerminal === term),
-      );
+      // const newTerminals: string[] = terminals.filter(
+      //   (term: string) =>
+      //     !exist_termianls.find((terminal) => terminal.aboTerminal === term),
+      // );
 
       const aboCodBanco = aboNroCuenta.slice(0, 4);
 
-      const abono: Abonos[] = newTerminals.map((terminal: string) => ({
+      const abono: Abonos[] = terminals.map((terminal: string) => ({
         aboTerminal: terminal,
         aboCodAfi: cxaCodAfi,
         aboCodComercio: commerce.comerCod,
@@ -49,8 +49,8 @@ export class AbonoService {
         estatusId: 23,
       }));
 
-      console.log('nuevos', newTerminals);
-      console.log('existe', exist_termianls);
+      console.log('nuevos', terminals);
+      //console.log('existe', exist_termianls);
 
       const abonosSaves = await DS.getRepository(Abonos).save(abono);
 
@@ -58,14 +58,14 @@ export class AbonoService {
         message: '',
       };
 
-      if (exist_termianls.length) {
-        //info.terminales_Error = exist_termianls.map((term) => term.aboTerminal);
-        info.code = 202;
-      }
+      // if (exist_termianls.length) {
+      //   //info.terminales_Error = exist_termianls.map((term) => term.aboTerminal);
+      //   info.code = 202;
+      // }
 
       //console.log('creado el abono', abonosSaves);
-      info.message = `[${commerce.comerRif}] Terminales creados: ${abonosSaves.length}, terminales rechazados: ${exist_termianls.length}`;
-      if (newTerminals.length) info.terminales = newTerminals;
+      info.message = `${commerce.comerRif} Terminales creados: ${abonosSaves.length}`;
+      if (terminals.length) info.terminales = terminals;
       return info;
     } catch (e) {
       console.log('Abono error:', e);

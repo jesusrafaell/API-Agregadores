@@ -14,3 +14,8 @@ export class LoginUsuarioDto {
 export class Token {
   access_token: string;
 }
+
+export class ResAccesToken {
+  agr: string;
+  access_token: string;
+}
