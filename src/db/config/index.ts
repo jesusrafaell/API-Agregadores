@@ -8,17 +8,17 @@ import SitranDS from './sitran_dataSource';
 
 export const Conections = async () => {
   await SitranDS.initialize();
-  console.log('Sitran    ✅');
+  console.log('Sitran     ✅');
   await CarropagoDS.initialize();
-  console.log('Carropago ✅');
+  console.log('Carropago  ✅');
   await LibrepagoDS.initialize();
-  console.log('Librepago ✅');
+  console.log('Librepago  ✅');
   await GSComputerDS.initialize();
-  console.log('GSComputer OK  ✅');
+  console.log('GSComputer ✅');
   await DISGLOBALDS.initialize();
-  console.log('DISGLOBAL OK  ✅');
+  console.log('DISGLOBAL  ✅');
   await CONSULTELDS.initialize();
-  console.log('CONSULTEL OK  ✅');
+  console.log('CONSULTEL  ✅');
   // await MilPagosDS.initialize();
   // console.log('MilPagos  ✅');
 };
