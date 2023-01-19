@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('Parametro_Terminal', { synchronize: true })
+@Entity('Parametro_Terminal', { synchronize: false })
 export default class Parametro_Terminal {
   @PrimaryGeneratedColumn()
   id?: number;

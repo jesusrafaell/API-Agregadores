@@ -7,8 +7,9 @@ import { Header, Log } from './dto/dto-logs.dto';
 import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import general_logs_api from '../db/models/general_logs_api.entity';
 import { getDatasource } from '../db/config';
+import general_logs_api from '../db/global/models/general_logs_api.entity';
+import origin_logs_api from '../db/global/models/origin_logs_api.entity';
 
 @Injectable()
 export class LogsService {

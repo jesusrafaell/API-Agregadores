@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import Usuarios from './usuarios.entity';
 
-@Entity()
+@Entity({ synchronize: false })
 export default class Agregador {
   @PrimaryGeneratedColumn()
   id?: number;

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import Profile from './profile.entity';
 
-@Entity()
+@Entity({ synchronize: false })
 export default class Roles {
   @PrimaryGeneratedColumn()
   id?: number;

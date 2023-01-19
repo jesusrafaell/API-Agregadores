@@ -10,7 +10,7 @@ import Agregador from './agregador.entity';
 import Profile from './profile.entity';
 import Status from './status.entity';
 
-@Entity('Usuarios', { synchronize: false })
+@Entity({ synchronize: false })
 export default class Usuarios {
   @PrimaryGeneratedColumn()
   id?: number;

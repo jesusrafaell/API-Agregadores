@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
+import { globalModels } from './parmetros.config';
 
 const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } =
   process.env;
@@ -18,9 +19,9 @@ const SitranDS = new DataSource({
   synchronize: false,
   migrationsRun: false,
   logging: false,
-  entities: ['dist/db/sitran/models/**/*.entity.{ts,js}'],
-  migrations: ['./db/sitran/migrations/**/*.ts'],
-  subscribers: ['./db/sitran/subscriber/**/*.ts'],
+  entities: [__dirname + '/../sitran/models/**/*.entity.{ts,js}', globalModels],
+  migrations: [__dirname + '/../sitran/migrations/**/*{.ts,.js}'],
+  migrationsTableName: 'migrations_api_v1',
 });
 
 export default SitranDS;

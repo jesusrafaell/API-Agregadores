@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import origin_logs_api from '../models/origin_logs_api.entity';
+import origin_logs_api from '../global/models/origin_logs_api.entity';
 
 const data: origin_logs_api = {
   name: 'API TRANRED',

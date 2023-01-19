@@ -24,7 +24,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "sitran:create": "npx typeorm-ts-node-esm migration:generate ./src/db/migrations/Migratrion -d ./src/db/config/sitran_dataSource.ts",
+    "sitran:create": "npx typeorm-ts-node-esm migration:generate ./src/db/sitran/migrations/Migratrion -d ./src/db/config/sitran_dataSource.ts",
     "gscomputer:create": "npx typeorm-ts-node-esm migration:generate ./src/db/migrations/Migratrion -d ./src/db/config/dataSource/gscomputer.ts",
     "migrate:create": "yarn gscomputer:create",
     "sitran:run": "env-cmd -f %npm_package_config_env% npx typeorm-ts-node-esm migration:run -d ./src/db/config/sitran_dataSource.ts",

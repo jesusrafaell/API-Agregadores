@@ -11,7 +11,9 @@ import afiliados_api from './afiliadosApi';
 import origin_logs from './origin_logs';
 
 SitranDS.initialize()
-  .then(async () => {
+  .then(async (DS) => {
+    console.log('Sitran');
+    await origin_logs(DS);
     await LibrepagoDS.initialize()
       .then(async (DS) => {
         console.log('LibrePago');

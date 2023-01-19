@@ -8,13 +8,23 @@ import {
   Post,
   Req,
   Get,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { Header } from '../logs/dto/dto-logs.dto';
 import { LogsService } from '../logs/logs.service';
-import { CreateTerminalsDto } from './dto/create-terminals.dto';
-import { RespTerm, TerminalsService } from './terminals.service';
+import {
+  BodyTermStatusDto,
+  CreateTerminalsDto,
+  ParamTermDto,
+} from './dto/create-terminals.dto';
+import {
+  RespStatusTerm,
+  RespTerm,
+  TerminalsService,
+} from './terminals.service';
 
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
@@ -48,5 +58,21 @@ export class TerminalsController {
   ): Promise<RespTerm> {
     const header: Header = this.logService.getDataToken(token, req);
     return this._TerminalsService.getAllTerminals(header);
+  }
+
+  @Put('/status/:terminal')
+  PutChangeStatus(
+    @Headers('authorization') token: string,
+    @Req() req: Request,
+    @Param() params: ParamTermDto,
+    @Body() body: BodyTermStatusDto,
+  ): Promise<RespStatusTerm> {
+    const header: Header = this.logService.getDataToken(token, req);
+    console.log('Data', params.terminal, body.status);
+    return this._TerminalsService.updateStatus(
+      params.terminal,
+      body.status,
+      header,
+    );
   }
 }

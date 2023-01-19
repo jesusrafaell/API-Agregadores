@@ -21,6 +21,11 @@ export interface RespTerm {
   code?: number;
 }
 
+export interface RespStatusTerm {
+  terminal: string;
+  message: string;
+}
+
 export interface IPrefijoValue {
   value: number;
 }
@@ -151,17 +156,66 @@ export class TerminalsService {
 
   async getAllTerminals(header: Header): Promise<ITerminalAll> {
     const { DS } = header;
-    const termianls = await DS.getRepository(Abonos).find({
+    const terminales = await DS.getRepository(Abonos).find({
       select: ['aboTerminal', 'aboCodAfi', 'aboNroCuenta'],
     });
 
-    if (!termianls.length) {
+    if (!terminales.length) {
       throw new BadRequestException(`No existen terminales en abono`);
     }
 
     return {
       message: `Todas las Terminales`,
-      terminales: termianls,
+      terminales: terminales,
+    };
+  }
+
+  async updateStatus(
+    terminal: string,
+    status: number,
+    header: Header,
+  ): Promise<RespStatusTerm> {
+    const { DS } = header;
+    const existTerm = await DS.getRepository(Abonos).findOne({
+      where: { aboTerminal: terminal },
+    });
+
+    if (!existTerm) {
+      throw new BadRequestException(`No existe el terminal en ${header.agr}`);
+    }
+
+    //AxiosResponse<{ Terminal: string[]; ok: boolean }>
+    await axios
+      .post(
+        `${REACT_APP_APIURL_APT}actdesc`,
+        {
+          terminal,
+          estado: status ? '1' : '0',
+          responsable: `API_T ${header.agr}`,
+        },
+        { headers: { authorization: header.token } },
+      )
+      .catch((err) => {
+        console.log('Error APT:', err);
+        console.log('aqui', err.response.data.originalError);
+        throw new BadRequestException({
+          message: 'APT: ' + err.message || 'Error APT',
+        });
+      });
+    // console.log('Response APT', responseSP);
+    // const termAPt = responseSP.data.Terminal[0].split(',');
+
+    // console.log('APT api', termAPt);
+
+    header.log.msg = `Se actualizaco el status ${terminal} a ${
+      status ? 'Activo' : 'Inactivo'
+    }`;
+    await this.logService.saveLogs(header.log, DS);
+
+    return {
+      message:
+        'La actualizacion fue realizada con exito (tarda aprox 10 minutos)',
+      terminal,
     };
   }
 }

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import Profile from './profile.entity';
 
-@Entity()
+@Entity({ synchronize: false })
 @Index(['name'], { unique: true })
 export default class Department {
   @PrimaryGeneratedColumn()

@@ -12,7 +12,7 @@ import Department from './department.entity';
 import Roles from './roles.entity';
 import Usuarios from './usuarios.entity';
 
-@Entity()
+@Entity({ synchronize: false })
 @Index(['department', 'rol'], { unique: true })
 export default class Profile {
   @PrimaryGeneratedColumn()
