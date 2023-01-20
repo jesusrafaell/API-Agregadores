@@ -11,7 +11,6 @@ import Afiliados from '../db/models/afiliados.entity';
 import { LogsService } from '../logs/logs.service';
 import afiliado_api from '../db/models/afiliados_api.entity';
 import Bancos from '../db/models/bancos.entity';
-import ComisionesMilPagos from '../db/models/comisionesmilpagos.entity';
 import { Header } from '../logs/dto/dto-logs.dto';
 import { ICommerceAll, ICommerceGet } from './dto';
 import { AbonoService } from '../abono/abono.service';
@@ -53,10 +52,7 @@ export class CommerceService {
         `Comercio [${commerce.comerRif}] ya existe`,
       );
     }
-    console.log('bug2');
-
     const { idActivityXAfiliado: cxaCod } = commerce;
-    console.log('numero de afiliado', cxaCod);
 
     const afiliadoGeneral = await DS.getRepository(Afiliados).findOne({
       where: { afiCod: cxaCod },
@@ -90,11 +86,10 @@ export class CommerceService {
     });
 
     if (!validBank) {
-      console.log(`Code Bank invalid [${aboCodBanco}]`);
       throw new BadRequestException(`Code Bank invalid [${aboCodBanco}]`);
     }
 
-    const newCommerce: Comercios = {
+    const comercioSave = await DS.getRepository(Comercios).save({
       comerDesc: commerce.comerDesc,
       comerTipoPer: commerce.comerTipoPer,
       comerCodigoBanco: aboCodBanco,
@@ -131,12 +126,9 @@ export class CommerceService {
       comerDireccionPos: locationToString(commerce.locationPos),
       comerDiasOperacion: daysToString(commerce.daysOperacion),
       comerFechaGarFian: null,
-    };
+    });
 
-    const comercioSave = await DS.getRepository(Comercios).save(newCommerce);
-    console.log('listo comercio');
-    //Contacto
-    const newContacto: Contactos = {
+    await DS.getRepository(Contactos).save({
       contCodComer: comercioSave.comerCod,
       contNombres: contacto.contNombres,
       contApellidos: contacto.contApellidos,
@@ -145,42 +137,21 @@ export class CommerceService {
       contMail: contacto.contMail,
       contCodUsuario: null,
       contFreg: null,
-    };
-
-    await DS.getRepository(Contactos).save(newContacto);
-    console.log('listo contacto');
+    });
 
     //Crear comerxafiliado
-    let comerXafiSave = await DS.getRepository(ComerciosXafiliado).findOne({
-      where: { cxaCodComer: comercioSave?.comerCod },
+    await DS.getRepository(ComerciosXafiliado).save({
+      cxaCodAfi: cxaCod,
+      cxaCodComer: comercioSave?.comerCod,
     });
-
-    if (!comerXafiSave) {
-      comerXafiSave = await DS.getRepository(ComerciosXafiliado).save({
-        cxaCodAfi: cxaCod,
-        cxaCodComer: comercioSave?.comerCod,
-      });
-      console.log('listo comercioxafilido');
-    } else {
-      console.log('ComercioXafiliado ya existe', comercioSave?.comerCod);
-    }
 
     //Crear Comision
-    const comisionSave = await DS.getRepository(ComisionesMilPagos).findOne({
-      where: { cmCodComercio: comercioSave?.comerCod },
-    });
 
-    console.log('existe comision', comisionSave);
-
-    if (!comisionSave) {
-      await DS.query(`
-						INSERT INTO [dbo].[ComisionesMilPagos]
-							([cmCodComercio] ,[cmPorcentaje])
-						VALUES (${comercioSave?.comerCod} ,0)				
-        `);
-    }
-
-    console.log('listo comisionmilpagos');
+    await DS.query(`
+      INSERT INTO [dbo].[ComisionesMilPagos]
+        ([cmCodComercio] ,[cmPorcentaje])
+      VALUES (${comercioSave?.comerCod} ,0)				
+    `);
 
     const info = {
       message: `Comerico [${commerce.comerRif}] creado con exito`,
