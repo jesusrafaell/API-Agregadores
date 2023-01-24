@@ -11,6 +11,8 @@ import axios, { AxiosResponse } from 'axios';
 import { Header } from '../logs/dto/dto-logs.dto';
 import Abonos from '../db/models/abono.entity';
 import { ITerminalAll } from './dto';
+import Bancos from '../db/models/bancos.entity';
+import { isValid } from '../utils/functions/validAcoountBank';
 const { REACT_APP_APIURL_APT } = process.env;
 
 export interface RespTerm {
@@ -215,6 +217,52 @@ export class TerminalsService {
       message:
         'La actualizacion fue realizada con exito (tarda aprox 10 minutos)',
       terminal,
+    };
+  }
+
+  async updateAccountNumber(
+    terminal: string,
+    comerCuentaBanco: string,
+    header: Header,
+  ): Promise<RespStatusTerm> {
+    const { DS } = header;
+    const abono = await DS.getRepository(Abonos).findOne({
+      where: { aboTerminal: terminal },
+    });
+    if (!abono) throw new BadRequestException('Terminal no existe');
+
+    const aboCodBanco = comerCuentaBanco.slice(0, 4);
+
+    const validBank = await DS.getRepository(Bancos).findOne({
+      where: { banCodBan: aboCodBanco },
+    });
+
+    if (!validBank)
+      throw new BadRequestException(
+        `El codigo de banco [${aboCodBanco}] no existe`,
+      );
+
+    if (!isValid(comerCuentaBanco)) {
+      console.log(
+        `Codigo de Control Invalido [${comerCuentaBanco}], banco: [${validBank.banDescBan}]`,
+      );
+      throw new BadRequestException(
+        `Codigo de Control Invalido [${comerCuentaBanco}], banco: [${validBank.banDescBan}]`,
+      );
+    }
+
+    await DS.getRepository(Abonos).update(abono.aboCod, {
+      aboNroCuenta: comerCuentaBanco,
+      aboCodBanco,
+    });
+
+    header.log.msg = `Se modifco el nro. Cuenta [${terminal}] nuevo: [${comerCuentaBanco}] / antes:[${abono.aboNroCuenta}] `;
+
+    await this.logService.saveLogs(header.log, DS);
+
+    return {
+      message: `Se actualizo el numero de cuenta banco: ${validBank.banDescBan}`,
+      terminal: terminal,
     };
   }
 }

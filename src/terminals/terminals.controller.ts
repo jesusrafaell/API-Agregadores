@@ -20,6 +20,7 @@ import {
   CreateTerminalsDto,
   ParamTermDto,
 } from './dto/create-terminals.dto';
+import { CuentaNumeroDto, TerminalDto } from './dto/put-terminals.dto';
 import {
   RespStatusTerm,
   RespTerm,
@@ -58,6 +59,21 @@ export class TerminalsController {
   ): Promise<RespTerm> {
     const header: Header = this.logService.getDataToken(token, req);
     return this._TerminalsService.getAllTerminals(header);
+  }
+
+  @Put('/bank/:terminal')
+  PutChangeBank(
+    @Headers('authorization') token: string,
+    @Param() params: TerminalDto,
+    @Body() body: CuentaNumeroDto,
+    @Req() req: Request,
+  ): Promise<RespStatusTerm> {
+    const header: Header = this.logService.getDataToken(token, req);
+    return this._TerminalsService.updateAccountNumber(
+      params.terminal,
+      body.comerCuentaBanco,
+      header,
+    );
   }
 
   @Put('/status/:terminal')
