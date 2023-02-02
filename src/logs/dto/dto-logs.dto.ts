@@ -23,6 +23,7 @@ export class Log {
 export class Header {
   DS: DataSource;
   agr: string;
+  idAgr: number;
   token: string;
   log: Log;
 }

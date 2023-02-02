@@ -1,46 +1,38 @@
-import { DataSource } from 'typeorm';
-import CarropagoDS from './dataSource/carroPago';
-import CONSULTELDS from './dataSource/consultel';
-import DISGLOBALDS from './dataSource/disglobal';
-import GSComputerDS from './dataSource/gscomputer';
-import LibrepagoDS from './dataSource/librePago';
+import { Not } from 'typeorm';
+import ProcessPrint from '../../utils/barrProcess';
+import Agregador from '../sitran/models/agregador.entity';
+import agredadorDS from './dataSource';
+import { IAgregadoresDS } from './dto';
 import SitranDS from './sitran_dataSource';
 
-export const Conections = async () => {
-  await SitranDS.initialize();
-  console.log('Sitran     ✅');
-  await CarropagoDS.initialize();
-  console.log('Carropago  ✅');
-  await LibrepagoDS.initialize();
-  console.log('Librepago  ✅');
-  await GSComputerDS.initialize();
-  console.log('GSComputer ✅');
-  await DISGLOBALDS.initialize();
-  console.log('DISGLOBAL  ✅');
-  await CONSULTELDS.initialize();
-  console.log('CONSULTEL  ✅');
-  // await MilPagosDS.initialize();
-  // console.log('MilPagos  ✅');
-};
-
-export const getDatasource = (agr: number): DataSource => {
-  // console.log('get', agr);
-  switch (agr) {
-    case 1:
-      return CarropagoDS;
-    // case 2:
-    //   return MilPagosDS;
-    case 3:
-      return LibrepagoDS;
-    case 4:
-      return GSComputerDS;
-    case 5:
-      return SitranDS;
-    case 6:
-      return DISGLOBALDS;
-    case 7:
-      return CONSULTELDS;
-    default:
-      return null;
+export const Conections = async (): Promise<IAgregadoresDS> => {
+  try {
+    await SitranDS.initialize();
+    console.log('Sitran     ✅');
+    console.log('Agregadores:');
+    const agregadores = await SitranDS.getRepository(Agregador).find({
+      where: {
+        isAgr: 1,
+        db: Not('DISGLOBAL'), //delete
+      },
+    });
+    // console.log('listAgregadores', agregadores);
+    let listDS: IAgregadoresDS;
+    agregadores.forEach((agr) => {
+      listDS = {
+        ...listDS,
+        [agr.id]: agredadorDS(agr.host, agr.db),
+      };
+    });
+    await ProcessPrint(listDS);
+    console.log();
+    console.log('Connected');
+    agregadores.forEach((item) => {
+      console.log('✅ ' + item.db);
+    });
+    return listDS;
+  } catch (err) {
+    console.log(err);
+    throw { msg: err.msg };
   }
 };

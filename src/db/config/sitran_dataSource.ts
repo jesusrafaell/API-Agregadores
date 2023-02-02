@@ -19,7 +19,11 @@ const SitranDS = new DataSource({
   synchronize: false,
   migrationsRun: false,
   logging: false,
-  entities: [__dirname + '/../sitran/models/**/*.entity.{ts,js}', globalModels],
+  entities: [
+    __dirname + '/../sitran/models/**/*.entity.{ts,js}',
+    globalModels,
+    // __dirname + '/../sitran/newModels/**/*.entity.{ts,js}',
+  ],
   migrations: [__dirname + '/../sitran/migrations/**/*{.ts,.js}'],
   migrationsTableName: 'migrations_api_v1',
 });

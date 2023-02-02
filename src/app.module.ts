@@ -1,17 +1,50 @@
-import { Module } from '@nestjs/common';
+import {
+  CacheModule,
+  CACHE_MANAGER,
+  DynamicModule,
+  Global,
+  Module,
+} from '@nestjs/common';
+import { AgregadoresModule } from './agregadores/agregadores.module';
 import { AuthModule } from './auth/auth.module';
 import { CommerceModule } from './commerce/commerce.module';
+import { IAgregadoresDS } from './db/config/dto';
 import { TerminalsModule } from './terminals/terminals.module';
 import { TestApiModule } from './testAPI/testAPi.module';
+import { Cache } from 'cache-manager';
 
+@Global()
 @Module({
   imports: [
-    // ...configModule,
+    // CacheModule.register({ isGlobal: true }),
     TestApiModule,
     AuthModule,
     CommerceModule,
     TerminalsModule,
-    // AbonoModule,
+    AgregadoresModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  static forRoot(config: { DS: IAgregadoresDS }): DynamicModule {
+    const DS = config.DS;
+
+    const cacheOptions = {
+      isGlobal: true,
+      store: 'memory',
+      max: 100,
+      ttl: 60 * 60,
+    };
+
+    return {
+      module: AppModule,
+      imports: [CacheModule.register(cacheOptions)],
+      providers: [
+        {
+          provide: 'DS',
+          useValue: DS,
+        },
+      ],
+      exports: ['DS'],
+    };
+  }
+}

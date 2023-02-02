@@ -10,9 +10,11 @@ import {
   Get,
   Put,
   Param,
+  Inject,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { IAgregadoresDS } from '../db/config/dto';
 import { Header } from '../logs/dto/dto-logs.dto';
 import { LogsService } from '../logs/logs.service';
 import {
@@ -34,6 +36,7 @@ export class TerminalsController {
   constructor(
     private readonly _TerminalsService: TerminalsService,
     private readonly logService: LogsService,
+    @Inject('DS') private readonly DS: IAgregadoresDS,
   ) {}
 
   @Post('create')
@@ -42,7 +45,7 @@ export class TerminalsController {
     @Req() req: Request,
     @Body() body: CreateTerminalsDto,
   ): Promise<RespTerm> {
-    const header: Header = this.logService.getDataToken(token, req);
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
     return this._TerminalsService.createTerminals(
       body.comerRif,
       body.comerCantPost,
@@ -57,7 +60,7 @@ export class TerminalsController {
     @Headers('authorization') token: string,
     @Req() req: Request,
   ): Promise<RespTerm> {
-    const header: Header = this.logService.getDataToken(token, req);
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
     return this._TerminalsService.getAllTerminals(header);
   }
 
@@ -68,7 +71,7 @@ export class TerminalsController {
     @Body() body: CuentaNumeroDto,
     @Req() req: Request,
   ): Promise<RespStatusTerm> {
-    const header: Header = this.logService.getDataToken(token, req);
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
     return this._TerminalsService.updateAccountNumber(
       params.terminal,
       body.comerCuentaBanco,
@@ -83,7 +86,7 @@ export class TerminalsController {
     @Param() params: ParamTermDto,
     @Body() body: BodyTermStatusDto,
   ): Promise<RespStatusTerm> {
-    const header: Header = this.logService.getDataToken(token, req);
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
     console.log('Data', params.terminal, body.status);
     return this._TerminalsService.updateStatus(
       params.terminal,
