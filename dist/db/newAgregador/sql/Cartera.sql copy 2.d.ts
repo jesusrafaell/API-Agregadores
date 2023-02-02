@@ -1,0 +1,2 @@
+declare const Cartera = "\n  CREATE TABLE [dbo].[Cartera](\n    [Id] [int] IDENTITY(1,1) NOT NULL,\n    [Cod_Cartera] [varchar](15) NOT NULL,\n    [Nombre_Org] [varchar](200) NULL,\n  PRIMARY KEY CLUSTERED \n  (\n    [Cod_Cartera] ASC\n  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n  ) ON [PRIMARY];\n";
+export default Cartera;

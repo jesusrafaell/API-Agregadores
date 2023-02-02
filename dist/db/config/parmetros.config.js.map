@@ -1,0 +1,1 @@
+{"version":3,"file":"parmetros.config.js","sourceRoot":"","sources":["../../../src/db/config/parmetros.config.ts"],"names":[],"mappings":";;;AAGa,QAAA,YAAY,GACvB,SAAS,GAAG,wCAAwC,CAAC;AAE1C,QAAA,mBAAmB,GAAG;IACjC,SAAS,GAAG,iCAAiC;IAC7C,oBAAY;CACb,CAAC;AAEW,QAAA,qBAAqB,GAAG;IACnC,SAAS,GAAG,8BAA8B;CAC3C,CAAC"}

@@ -1,0 +1,2 @@
+declare const CodigoArea = "\n  CREATE TABLE [dbo].[CodigosArea](\n    [codigo] [varchar](6) NOT NULL,\n    [tipoCodigo] [int] NOT NULL,\n  CONSTRAINT [PK_CodigosArea] PRIMARY KEY CLUSTERED \n  (\n    [codigo] ASC\n  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n  ) ON [PRIMARY];\n";
+export default CodigoArea;
