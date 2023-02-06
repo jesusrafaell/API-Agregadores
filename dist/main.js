@@ -12,7 +12,6 @@ async function bootstrap() {
         cert: fs.readFileSync('cert.pem'),
     };
     try {
-        const address = interfaces['Wi-Fi'][1].address;
         await (0, config_1.Conections)()
             .then(async (listDS) => {
             const app = await core_1.NestFactory.create(app_module_1.AppModule.forRoot({ DS: listDS }), {
@@ -20,9 +19,8 @@ async function bootstrap() {
                 logger: false,
             });
             await app.listen(5050, async () => {
-                console.log(`Application is running on: ${address}:${await app
-                    .getHttpServer()
-                    .address().port}`);
+                console.log(`Application is running on ${await app.getHttpServer().address()
+                    .port}`);
             });
         })
             .catch(async (err) => {

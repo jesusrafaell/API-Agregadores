@@ -1,4 +1,3 @@
-import { ClientGrpcProxy } from '@nestjs/microservices';
 import ProcessPrint from '../../utils/barrProcess';
 import Agregador from '../sitran/models/agregador.entity';
 import agredadorDS from './dataSource';

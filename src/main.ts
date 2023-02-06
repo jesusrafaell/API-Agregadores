@@ -33,14 +33,14 @@ async function bootstrap() {
         );
         await app.listen(5050, async () => {
           console.log(
-            `Application is running on: ${await app.getHttpServer().address()
+            `Application is running on ${await app.getHttpServer().address()
               .port}`,
           );
         });
       })
       .catch(async (err) => {
         console.log('Error MAIN');
-        console.log(`Error Connection: ${err.msg}`);
+        console.log(`Error Connection: ${err}`);
       });
   } catch (err) {
     console.log(err);
