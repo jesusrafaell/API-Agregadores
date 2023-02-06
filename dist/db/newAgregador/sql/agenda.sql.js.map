@@ -1,1 +1,1 @@
-{"version":3,"file":"agenda.sql.js","sourceRoot":"","sources":["../../../../src/db/newAgregador/sql/agenda.sql.ts"],"names":[],"mappings":";;AAAA,MAAM,MAAM,GAAG;;;;;;;;;;;;;;;;;;;;;;;;CAwBd,CAAC;AAEF,kBAAe,MAAM,CAAC"}
+{"version":3,"file":"Agenda.sql.js","sourceRoot":"","sources":["../../../../src/db/newAgregador/sql/Agenda.sql.ts"],"names":[],"mappings":";;AAAA,MAAM,MAAM,GAAG;;;;;;;;;;;;;;;;;;;;;;;;CAwBd,CAAC;AAEF,kBAAe,MAAM,CAAC"}

@@ -27,8 +27,6 @@ let AgregadoresService = class AgregadoresService {
         };
         try {
             console.log('call bug1');
-            await (0, dataSource_1.createNewDatabase)(newAgregador.db);
-            await (0, dataSource_1.createTablesDatabase)(newAgregador.db);
             const newDS = (0, dataSource_1.createTablesAgregador)(newAgregador.host, newAgregador.db);
             console.log('call bug2');
             await newDS.initialize();

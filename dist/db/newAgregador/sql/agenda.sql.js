@@ -26,4 +26,4 @@ const Agenda = `
   ALTER TABLE [dbo].[Agenda] NOCHECK CONSTRAINT [FK_Agenda_Comercios];
 `;
 exports.default = Agenda;
-//# sourceMappingURL=agenda.sql.js.map
+//# sourceMappingURL=Agenda.sql.js.map

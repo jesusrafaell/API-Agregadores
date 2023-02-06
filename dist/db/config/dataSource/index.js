@@ -5,7 +5,6 @@ const typeorm_1 = require("typeorm");
 const parmetros_config_1 = require("../parmetros.config");
 require("dotenv/config");
 const sql = require("mssql");
-const Bancos_sql_1 = require("../../newAgregador/sql/Bancos.sql");
 const { DB_USER, DB_PASS } = process.env;
 const agredadorDS = (host, db) => {
     return new typeorm_1.DataSource({
@@ -56,15 +55,6 @@ const createNewDatabase = async (dbName) => {
 exports.createNewDatabase = createNewDatabase;
 const createTablesDatabase = async (dbName) => {
     const pool = new sql.ConnectionPool(Object.assign(Object.assign({}, config), { database: dbName }));
-    await pool.connect().then(async () => {
-        await pool
-            .request()
-            .query(Bancos_sql_1.default)
-            .then(() => console.log('Created banco'))
-            .catch((err) => {
-            console.log(err);
-        });
-    });
 };
 exports.createTablesDatabase = createTablesDatabase;
 const createTablesAgregador = (host, db) => {

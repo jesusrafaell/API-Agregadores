@@ -50,4 +50,4 @@ const Aliados = `
   ALTER TABLE [dbo].[Aliados] CHECK CONSTRAINT [FK_Aliados_ZonaAtencion];
   `;
 exports.default = Aliados;
-//# sourceMappingURL=aliados.sql.js.map
+//# sourceMappingURL=Aliados.sql.js.map
