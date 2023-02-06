@@ -9,12 +9,12 @@ const Conections = async () => {
     try {
         await sitran_dataSource_1.default.initialize();
         console.log('Sitran     ✅');
-        console.log('Agregadores:');
         const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
             where: {
                 isAgr: 1,
             },
         });
+        console.log(agregadores.length, 'Agregadores:');
         let listDS;
         agregadores.forEach((agr) => {
             listDS = Object.assign(Object.assign({}, listDS), { [agr.id]: (0, dataSource_1.default)(agr.host, agr.db) });
