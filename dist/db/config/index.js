@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Conections = void 0;
-const typeorm_1 = require("typeorm");
 const barrProcess_1 = require("../../utils/barrProcess");
 const agregador_entity_1 = require("../sitran/models/agregador.entity");
 const dataSource_1 = require("./dataSource");
@@ -14,7 +13,6 @@ const Conections = async () => {
         const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
             where: {
                 isAgr: 1,
-                db: (0, typeorm_1.Not)('DISGLOBAL'),
             },
         });
         let listDS;

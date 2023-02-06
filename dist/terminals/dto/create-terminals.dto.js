@@ -42,7 +42,7 @@ class CreateTerminalsDto {
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(messages_validator_1.default.textNotEmpty),
-    (0, class_validator_1.Length)(8, 8, messages_validator_1.default.textLength),
+    (0, class_validator_1.Length)(7, 10, messages_validator_1.default.textLength),
     (0, class_validator_1.Validate)(new_commerce_dto_1.RifValidation),
     __metadata("design:type", String)
 ], CreateTerminalsDto.prototype, "comerRif", void 0);

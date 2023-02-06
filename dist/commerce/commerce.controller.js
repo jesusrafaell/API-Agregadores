@@ -39,7 +39,7 @@ let CommerceController = class CommerceController {
         return this._commerceService.getCommerceData(params.comerRif, header);
     }
     async getAllCommerce(token, req) {
-        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
+        const header = this.logService.getDataToken(token, req, this.DS);
         return this._commerceService.getAllCommerce(header);
     }
 };

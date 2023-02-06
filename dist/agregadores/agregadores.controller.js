@@ -25,7 +25,7 @@ let AgregadoresContronller = class AgregadoresContronller {
             for (const item in DS) {
                 const dataAgr = DS[item];
                 await this.cacheService.set(item, dataAgr);
-                console.log(item);
+                console.log(`Cache id: ${item}, name: ${dataAgr.options.database}`);
             }
         };
         init();

@@ -35,8 +35,6 @@ declare class CommerceData {
     comerDesc: string;
     comerTipoPer: number;
     comerCuentaBanco: string;
-    comerCodTipoCont: number;
-    comerObservaciones?: string;
     comerCodigoBanco2?: string;
     comerCuentaBanco2?: string;
     comerCodigoBanco3?: string;

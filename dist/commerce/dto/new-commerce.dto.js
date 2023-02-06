@@ -130,7 +130,7 @@ class CommerceData {
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(messages_validator_1.default.textNotEmpty),
-    (0, class_validator_1.Length)(6, 10, messages_validator_1.default.textLength),
+    (0, class_validator_1.Length)(7, 10, messages_validator_1.default.textLength),
     (0, class_validator_1.Validate)(RifValidation),
     __metadata("design:type", String)
 ], CommerceData.prototype, "comerRif", void 0);
@@ -154,11 +154,6 @@ __decorate([
     (0, class_validator_1.Length)(20, 20, messages_validator_1.default.cuentaBanco),
     __metadata("design:type", String)
 ], CommerceData.prototype, "comerCuentaBanco", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Validate)(SizeOneOrTwo),
-    __metadata("design:type", Number)
-], CommerceData.prototype, "comerCodTipoCont", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(4, 4, messages_validator_1.default.cuentaBanco),
