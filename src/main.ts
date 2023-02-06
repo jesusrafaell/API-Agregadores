@@ -19,7 +19,7 @@ async function bootstrap() {
 
   try {
     // console.log(app.init());
-    const address = interfaces['Wi-Fi'][1].address;
+    // const address = interfaces['Wi-Fi'][1].address;
 
     await Conections()
       .then(async (listDS: IAgregadoresDS) => {
@@ -33,9 +33,8 @@ async function bootstrap() {
         );
         await app.listen(5050, async () => {
           console.log(
-            `Application is running on: ${address}:${await app
-              .getHttpServer()
-              .address().port}`,
+            `Application is running on: ${await app.getHttpServer().address()
+              .port}`,
           );
         });
       })
