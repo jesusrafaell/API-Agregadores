@@ -25,7 +25,6 @@ export const Conections = async (): Promise<IAgregadoresDS> => {
       };
     });
     await ProcessPrint(listDS);
-    console.log();
     console.log('Connected');
     agregadores.forEach((item) => {
       console.log('✅ ' + item.db);

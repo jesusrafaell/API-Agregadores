@@ -4,8 +4,6 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const fs = require("fs");
 const config_1 = require("./db/config");
-const os = require("os");
-const interfaces = os.networkInterfaces();
 async function bootstrap() {
     const httpsOptions = {
         key: fs.readFileSync('key.pem'),

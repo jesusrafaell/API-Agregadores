@@ -22,7 +22,6 @@ const Conections = async () => {
             listDS = Object.assign(Object.assign({}, listDS), { [agr.id]: (0, dataSource_1.default)(agr.host, agr.db) });
         });
         await (0, barrProcess_1.default)(listDS);
-        console.log();
         console.log('Connected');
         agregadores.forEach((item) => {
             console.log('✅ ' + item.db);

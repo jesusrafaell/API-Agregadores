@@ -5,7 +5,7 @@ function barrProcess(seg, total, log) {
     const porcen = seg / total;
     const completed = Math.floor(porcen * log);
     const restant = log - completed;
-    const barr = `[${'#'.repeat(completed)}${'^'.repeat(restant)} ${(porcen * 100).toFixed(2)}%]`;
+    const barr = `[${'#'.repeat(completed)}${'*'.repeat(restant)} ${(porcen * 100).toFixed(2)}%]`;
     return barr;
 }
 async function ProcessPrint(listInitDS) {
@@ -27,6 +27,7 @@ async function ProcessPrint(listInitDS) {
             resolve(i);
         }, 20));
     }
+    console.log();
 }
 exports.default = ProcessPrint;
 //# sourceMappingURL=barrProcess.js.map

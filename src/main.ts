@@ -2,9 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as fs from 'fs';
 import { Conections } from './db/config';
-import * as os from 'os';
 import { IAgregadoresDS } from './db/config/dto';
-const interfaces = os.networkInterfaces();
 //import https from 'https';
 
 async function bootstrap() {

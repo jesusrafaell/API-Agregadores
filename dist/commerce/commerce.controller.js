@@ -26,8 +26,8 @@ let CommerceController = class CommerceController {
         this.DS = DS;
         this.cacheService = cacheService;
     }
-    createCommerce(token, req, body) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async createCommerce(token, req, body) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._commerceService.createCommerce(body, header);
     }
     getCommerce(token, req, params) {
@@ -39,7 +39,7 @@ let CommerceController = class CommerceController {
         return this._commerceService.getCommerceData(params.comerRif, header);
     }
     async getAllCommerce(token, req) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._commerceService.getAllCommerce(header);
     }
 };

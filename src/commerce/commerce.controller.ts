@@ -35,12 +35,17 @@ export class CommerceController {
   ) {}
 
   @Post('create')
-  createCommerce(
+  async createCommerce(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Body() body: CommerceDto,
   ): Promise<Resp> {
-    const header: Header = this.logService.getDataToken(token, req, this.DS);
+    // const header: Header = this.logService.getDataToken(token, req, this.DS);
+    const header: Header = await this.logService.getDataTokenCache(
+      token,
+      req,
+      this.cacheService,
+    );
     return this._commerceService.createCommerce(body, header);
   }
 
@@ -70,12 +75,12 @@ export class CommerceController {
     @Req() req: Request,
   ): Promise<ICommerceAll> {
     //const header: Header = this.logService.getDataToken(token, req, this.DS);
-    const header: Header = this.logService.getDataToken(token, req, this.DS);
-    // const header: Header = await this.logService.getDataTokenCache(
-    //   token,
-    //   req,
-    //   this.cacheService,
-    // );
+    // const header: Header = this.logService.getDataToken(token, req, this.DS);
+    const header: Header = await this.logService.getDataTokenCache(
+      token,
+      req,
+      this.cacheService,
+    );
     return this._commerceService.getAllCommerce(header);
   }
 }

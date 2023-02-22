@@ -40,6 +40,7 @@ AppModule = AppModule_1 = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
         imports: [
+            common_1.CacheModule.register({ isGlobal: true }),
             testAPi_module_1.TestApiModule,
             auth_module_1.AuthModule,
             commerce_module_1.CommerceModule,

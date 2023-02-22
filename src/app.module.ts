@@ -1,22 +1,15 @@
-import {
-  CacheModule,
-  CACHE_MANAGER,
-  DynamicModule,
-  Global,
-  Module,
-} from '@nestjs/common';
+import { CacheModule, DynamicModule, Global, Module } from '@nestjs/common';
 import { AgregadoresModule } from './agregadores/agregadores.module';
 import { AuthModule } from './auth/auth.module';
 import { CommerceModule } from './commerce/commerce.module';
 import { IAgregadoresDS } from './db/config/dto';
 import { TerminalsModule } from './terminals/terminals.module';
 import { TestApiModule } from './testAPI/testAPi.module';
-import { Cache } from 'cache-manager';
 
 @Global()
 @Module({
   imports: [
-    // CacheModule.register({ isGlobal: true }),
+    CacheModule.register({ isGlobal: true }),
     TestApiModule,
     AuthModule,
     CommerceModule,

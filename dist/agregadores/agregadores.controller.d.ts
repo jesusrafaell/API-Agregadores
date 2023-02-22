@@ -3,11 +3,13 @@ import { IAgregadoresDS } from '../db/config/dto';
 import { AgregadoresService } from './agregadores.service';
 import Agregador from '../db/sitran/models/agregador.entity';
 import { Cache } from 'cache-manager';
+import { IListStatus } from './dto';
 export declare class AgregadoresContronller {
     private readonly agreadoresService;
     private cacheService;
     private DS;
     constructor(agreadoresService: AgregadoresService, cacheService: Cache, DS: IAgregadoresDS);
+    saveAgrInCache(_DS?: IAgregadoresDS): Promise<string[]>;
     getAgregadores(token: string, req: Request, body: {
         name: string;
         host: string;
@@ -18,6 +20,13 @@ export declare class AgregadoresContronller {
     }>;
     reload(): Promise<{
         message: string;
-        total_agr: number;
+        new_agr?: string[];
+    }>;
+    status(): Promise<{
+        listStatus: IListStatus;
+    }>;
+    restartConnection(): Promise<{
+        message: string;
+        list_resets?: string[];
     }>;
 }

@@ -9,7 +9,7 @@ function barrProcess(seg: number, total: number, log: number): string {
   const porcen = seg / total;
   const completed = Math.floor(porcen * log);
   const restant = log - completed;
-  const barr = `[${'#'.repeat(completed)}${'^'.repeat(restant)} ${(
+  const barr = `[${'#'.repeat(completed)}${'*'.repeat(restant)} ${(
     porcen * 100
   ).toFixed(2)}%]`;
   return barr;
@@ -41,4 +41,5 @@ export default async function ProcessPrint(listInitDS: IAgregadoresDS) {
       }, 20),
     );
   }
+  console.log();
 }
