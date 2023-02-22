@@ -16,6 +16,9 @@ exports.AgregadoresContronller = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/jwt/jwt-auth.guard");
 const agregadores_service_1 = require("./agregadores.service");
+const agregador_entity_1 = require("../db/sitran/models/agregador.entity");
+const sitran_dataSource_1 = require("../db/config/sitran_dataSource");
+const dataSource_1 = require("../db/config/dataSource");
 let AgregadoresContronller = class AgregadoresContronller {
     constructor(agreadoresService, cacheService, DS) {
         this.agreadoresService = agreadoresService;
@@ -25,7 +28,8 @@ let AgregadoresContronller = class AgregadoresContronller {
             for (const item in DS) {
                 const dataAgr = DS[item];
                 await this.cacheService.set(item, dataAgr);
-                console.log(`Cache id: ${item}, name: ${dataAgr.options.database}`);
+                const ds = await this.cacheService.get(item);
+                console.log(`Cache ${item}  -> `, ds.options.database);
             }
         };
         init();
@@ -41,6 +45,26 @@ let AgregadoresContronller = class AgregadoresContronller {
         console.log('in agreadores', DS.options.database);
         return { id: newDS.id, name: newDS.DS.options.database };
     }
+    async reload() {
+        const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
+            where: {
+                isAgr: 1,
+            },
+        });
+        let listDS;
+        for (const index in agregadores) {
+            const item = agregadores[index];
+            const id = item.id.toString();
+            console.log(id);
+            const ds = await this.cacheService.get(id);
+            console.log(ds);
+            if (!ds) {
+                console.log('Create', item.db);
+                listDS = Object.assign(Object.assign({}, listDS), { [item.id]: (0, dataSource_1.default)(item.host, item.db) });
+            }
+        }
+        return { message: 'Reload Ready', total_agr: 0 };
+    }
 };
 __decorate([
     (0, common_1.Get)('all'),
@@ -52,16 +76,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AgregadoresContronller.prototype, "getAgregadores", null);
 __decorate([
-    (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
     (0, common_1.Post)('create'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AgregadoresContronller.prototype, "createAgregador", null);
+__decorate([
+    (0, common_1.Post)('reload'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AgregadoresContronller.prototype, "reload", null);
 AgregadoresContronller = __decorate([
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     (0, common_1.Controller)('agregadores'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
     __param(1, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __param(2, (0, common_1.Inject)('DS')),
     __metadata("design:paramtypes", [agregadores_service_1.AgregadoresService, Object, Object])

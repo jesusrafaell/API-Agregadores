@@ -16,4 +16,8 @@ export declare class AgregadoresContronller {
         id: number;
         name: string;
     }>;
+    reload(): Promise<{
+        message: string;
+        total_agr: number;
+    }>;
 }

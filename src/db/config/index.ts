@@ -1,3 +1,4 @@
+import { Not } from 'typeorm';
 import ProcessPrint from '../../utils/barrProcess';
 import Agregador from '../sitran/models/agregador.entity';
 import agredadorDS from './dataSource';
@@ -11,7 +12,7 @@ export const Conections = async (): Promise<IAgregadoresDS> => {
     const agregadores = await SitranDS.getRepository(Agregador).find({
       where: {
         isAgr: 1,
-        // db: Not('DISGLOBAL'), //delete
+        db: Not('DISGLOBAL'), //delete
       },
     });
     console.log(agregadores.length, 'Agregadores:');

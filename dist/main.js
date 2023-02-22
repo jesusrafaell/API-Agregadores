@@ -25,7 +25,7 @@ async function bootstrap() {
         })
             .catch(async (err) => {
             console.log('Error MAIN');
-            console.log(`Error Connection: ${err.msg}`);
+            console.log(`Error Connection: ${err}`);
         });
     }
     catch (err) {
