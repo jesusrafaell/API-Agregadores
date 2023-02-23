@@ -76,15 +76,19 @@ export class TerminalsService {
     //validar el prefijo
     let termAPt: string[];
     try {
-      //console.log('antes');
-      const resPref: AxiosResponse<{ Data: IPrefijoValue[] }> =
-        await axios.post(
+      const resPref: AxiosResponse<{ Data: IPrefijoValue[] }> = await axios
+        .post(
           `${REACT_APP_APIURL_APT}pref`,
           {
             name: header.agr,
           },
           { headers: { authorization: header.token } },
-        );
+        )
+        .catch(() => {
+          throw new BadRequestException({
+            message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
+          });
+        });
       const prefijos = resPref.data.Data;
       console.log('Resp APT', prefijos);
       const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
@@ -121,10 +125,10 @@ export class TerminalsService {
 
       //console.log('Res Exec', responseSP);
     } catch (err) {
+      console.log(err);
       throw new BadRequestException({
         message: err.message || 'Error APT',
       });
-      console.log(err);
     }
 
     if (!termAPt.length) {

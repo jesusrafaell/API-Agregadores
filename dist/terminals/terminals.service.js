@@ -40,9 +40,15 @@ let TerminalsService = class TerminalsService {
         const aboNroCuenta = comerCuentaBanco || commerce.comerCuentaBanco;
         let termAPt;
         try {
-            const resPref = await axios_1.default.post(`${REACT_APP_APIURL_APT}pref`, {
+            const resPref = await axios_1.default
+                .post(`${REACT_APP_APIURL_APT}pref`, {
                 name: header.agr,
-            }, { headers: { authorization: header.token } });
+            }, { headers: { authorization: header.token } })
+                .catch(() => {
+                throw new common_1.BadRequestException({
+                    message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
+                });
+            });
             const prefijos = resPref.data.Data;
             console.log('Resp APT', prefijos);
             const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
@@ -70,10 +76,10 @@ let TerminalsService = class TerminalsService {
             console.log('APT api', termAPt);
         }
         catch (err) {
+            console.log(err);
             throw new common_1.BadRequestException({
                 message: err.message || 'Error APT',
             });
-            console.log(err);
         }
         if (!termAPt.length) {
             throw new common_1.NotFoundException('No hay termianles disponibles');
