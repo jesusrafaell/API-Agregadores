@@ -11,6 +11,7 @@ import {
   Put,
   Param,
   Inject,
+  CACHE_MANAGER,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
@@ -29,6 +30,8 @@ import {
   TerminalsService,
 } from './terminals.service';
 
+import { Cache } from 'cache-manager';
+
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
 @Controller('terminal')
@@ -37,10 +40,11 @@ export class TerminalsController {
     private readonly _TerminalsService: TerminalsService,
     private readonly logService: LogsService,
     @Inject('DS') private readonly DS: IAgregadoresDS,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   @Post('create')
-  createTerminals(
+  async createTerminals(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Body() body: CreateTerminalsDto,
@@ -56,7 +60,7 @@ export class TerminalsController {
   }
 
   @Get('all')
-  getAllTerminal(
+  async getAllTerminal(
     @Headers('authorization') token: string,
     @Req() req: Request,
   ): Promise<RespTerm> {
@@ -65,7 +69,7 @@ export class TerminalsController {
   }
 
   @Put('/bank/:terminal')
-  PutChangeBank(
+  async PutChangeBank(
     @Headers('authorization') token: string,
     @Param() params: TerminalDto,
     @Body() body: CuentaNumeroDto,
@@ -80,7 +84,7 @@ export class TerminalsController {
   }
 
   @Put('/status/:terminal')
-  PutChangeStatus(
+  async PutChangeStatus(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: ParamTermDto,

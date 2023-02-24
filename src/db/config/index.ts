@@ -12,7 +12,7 @@ export const Conections = async (): Promise<IAgregadoresDS> => {
     const agregadores = await SitranDS.getRepository(Agregador).find({
       where: {
         isAgr: 1,
-        db: Not('MilPagos'), //delete
+        db: Not('MILPAGOS'), //delete
       },
     });
     console.log(agregadores.length, 'Agregadores:');

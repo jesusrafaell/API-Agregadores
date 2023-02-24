@@ -21,7 +21,6 @@ let LogsService = class LogsService {
                 const token = headerToken.replace('Bearer ', '');
                 const decode = this.jwtService.decode(token);
                 const { sub, agr } = decode;
-                console.log('total', Object.values(agregadores).length);
                 const DS = agregadores[agr.id];
                 if (!DS) {
                     console.log('No existe el agreador');

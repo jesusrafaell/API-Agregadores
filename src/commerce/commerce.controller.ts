@@ -40,17 +40,17 @@ export class CommerceController {
     @Req() req: Request,
     @Body() body: CommerceDto,
   ): Promise<Resp> {
-    // const header: Header = this.logService.getDataToken(token, req, this.DS);
-    const header: Header = await this.logService.getDataTokenCache(
-      token,
-      req,
-      this.cacheService,
-    );
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
+    // const header: Header = await this.logService.getDataTokenCache(
+    //   token,
+    //   req,
+    //   this.cacheService,
+    // );
     return this._commerceService.createCommerce(body, header);
   }
 
   @Get('/rif/:comerRif')
-  getCommerce(
+  async getCommerce(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: RifDto,
@@ -60,7 +60,7 @@ export class CommerceController {
   }
 
   @Post('/rif/:comerRif')
-  getCommercePost(
+  async getCommercePost(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: RifDto,
@@ -74,13 +74,7 @@ export class CommerceController {
     @Headers('authorization') token: string,
     @Req() req: Request,
   ): Promise<ICommerceAll> {
-    //const header: Header = this.logService.getDataToken(token, req, this.DS);
-    // const header: Header = this.logService.getDataToken(token, req, this.DS);
-    const header: Header = await this.logService.getDataTokenCache(
-      token,
-      req,
-      this.cacheService,
-    );
+    const header: Header = this.logService.getDataToken(token, req, this.DS);
     return this._commerceService.getAllCommerce(header);
   }
 }

@@ -13,7 +13,7 @@ const Conections = async () => {
         const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
             where: {
                 isAgr: 1,
-                db: (0, typeorm_1.Not)('DISGLOBAL'),
+                db: (0, typeorm_1.Not)('MILPAGOS'),
             },
         });
         console.log(agregadores.length, 'Agregadores:');

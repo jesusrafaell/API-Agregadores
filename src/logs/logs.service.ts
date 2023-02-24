@@ -51,7 +51,7 @@ export class LogsService {
       const decode = this.jwtService.decode(token);
       const { sub, agr } = decode as unknown as { sub: number; agr: Agregador };
       // console.log('id:', agr.id);
-      console.log('total', Object.values(agregadores).length);
+      // console.log('total', Object.values(agregadores).length);
       const DS = agregadores[agr.id];
       if (!DS) {
         console.log('No existe el agreador');
