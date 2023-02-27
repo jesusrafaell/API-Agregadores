@@ -9,7 +9,7 @@ const sitran_dataSource_1 = require("./sitran_dataSource");
 const Conections = async () => {
     try {
         await sitran_dataSource_1.default.initialize();
-        console.log('Sitran     ✅');
+        console.log('✅ DB:SITRAN');
         const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
             where: {
                 isAgr: 1,
@@ -24,13 +24,13 @@ const Conections = async () => {
         await (0, barrProcess_1.default)(listDS);
         console.log('Connected');
         agregadores.forEach((item) => {
-            console.log('✅ ' + item.db);
+            console.log('✅ DB:' + item.db);
         });
         return listDS;
     }
     catch (err) {
         console.log(err);
-        throw { msg: err.msg };
+        throw err.msg ? { msg: err.msg } : err;
     }
 };
 exports.Conections = Conections;

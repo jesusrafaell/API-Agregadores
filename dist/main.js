@@ -17,13 +17,16 @@ async function bootstrap() {
                 logger: false,
             });
             await app.listen(5050, async () => {
-                console.log(`Application is running on ${await app.getHttpServer().address()
-                    .port}`);
+                console.log(`Ready, Application is running on ${await app
+                    .getHttpServer()
+                    .address().port}`);
             });
         })
             .catch(async (err) => {
-            console.log('Error MAIN');
-            console.log(`Error Connection: ${err}`);
+            throw {
+                message: 'Error Connection DB',
+                error: err,
+            };
         });
     }
     catch (err) {

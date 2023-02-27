@@ -16,34 +16,6 @@ const general_logs_api_entity_1 = require("../db/global/models/general_logs_api.
 let LogsService = class LogsService {
     constructor(jwtService) {
         this.jwtService = jwtService;
-        this.getDataToken = (headerToken, req, agregadores) => {
-            try {
-                const token = headerToken.replace('Bearer ', '');
-                const decode = this.jwtService.decode(token);
-                const { sub, agr } = decode;
-                console.log('total', Object.values(agregadores).length);
-                const DS = agregadores[agr.id];
-                if (!DS) {
-                    console.log('No existe el agreador');
-                    throw new common_1.BadRequestException(`No existe el agreador`);
-                }
-                return {
-                    DS: DS,
-                    agr: agr.name,
-                    idAgr: agr.id,
-                    token,
-                    log: {
-                        id: sub,
-                        method: req.method,
-                        path: req.url,
-                        msg: '',
-                    },
-                };
-            }
-            catch (err) {
-                throw new common_1.UnauthorizedException('Token invalido agregador');
-            }
-        };
         this.getDataTokenCache = async (headerToken, req, cacheService) => {
             try {
                 const token = headerToken.replace('Bearer ', '');

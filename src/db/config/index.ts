@@ -8,7 +8,7 @@ import SitranDS from './sitran_dataSource';
 export const Conections = async (): Promise<IAgregadoresDS> => {
   try {
     await SitranDS.initialize();
-    console.log('Sitran     ✅');
+    console.log('✅ DB:SITRAN');
     const agregadores = await SitranDS.getRepository(Agregador).find({
       where: {
         isAgr: 1,
@@ -27,11 +27,11 @@ export const Conections = async (): Promise<IAgregadoresDS> => {
     await ProcessPrint(listDS);
     console.log('Connected');
     agregadores.forEach((item) => {
-      console.log('✅ ' + item.db);
+      console.log('✅ DB:' + item.db);
     });
     return listDS;
   } catch (err) {
     console.log(err);
-    throw { msg: err.msg };
+    throw err.msg ? { msg: err.msg } : err;
   }
 };

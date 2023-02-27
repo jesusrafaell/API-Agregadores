@@ -40,40 +40,40 @@ export class LogsService {
     }
   }
 
-  getDataToken = (
-    headerToken: string,
-    req: Request,
-    agregadores: IAgregadoresDS,
-  ): Header => {
-    try {
-      const token = headerToken.replace('Bearer ', '');
-      // console.log(token);
-      const decode = this.jwtService.decode(token);
-      const { sub, agr } = decode as unknown as { sub: number; agr: Agregador };
-      // console.log('id:', agr.id);
-      console.log('total', Object.values(agregadores).length);
-      const DS = agregadores[agr.id];
-      if (!DS) {
-        console.log('No existe el agreador');
-        throw new BadRequestException(`No existe el agreador`);
-      }
-      //console.log('agregador', agr);
-      return {
-        DS: DS,
-        agr: agr.name as string,
-        idAgr: agr.id,
-        token,
-        log: {
-          id: sub,
-          method: req.method,
-          path: req.url,
-          msg: '',
-        },
-      };
-    } catch (err) {
-      throw new UnauthorizedException('Token invalido agregador');
-    }
-  };
+  // getDataToken = (
+  //   headerToken: string,
+  //   req: Request,
+  //   agregadores: IAgregadoresDS,
+  // ): Header => {
+  //   try {
+  //     const token = headerToken.replace('Bearer ', '');
+  //     // console.log(token);
+  //     const decode = this.jwtService.decode(token);
+  //     const { sub, agr } = decode as unknown as { sub: number; agr: Agregador };
+  //     // console.log('id:', agr.id);
+  //     console.log('total', Object.values(agregadores).length);
+  //     const DS = agregadores[agr.id];
+  //     if (!DS) {
+  //       console.log('No existe el agreador');
+  //       throw new BadRequestException(`No existe el agreador`);
+  //     }
+  //     //console.log('agregador', agr);
+  //     return {
+  //       DS: DS,
+  //       agr: agr.name as string,
+  //       idAgr: agr.id,
+  //       token,
+  //       log: {
+  //         id: sub,
+  //         method: req.method,
+  //         path: req.url,
+  //         msg: '',
+  //       },
+  //     };
+  //   } catch (err) {
+  //     throw new UnauthorizedException('Token invalido agregador');
+  //   }
+  // };
 
   getDataTokenCache = async (
     headerToken: string,
