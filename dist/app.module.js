@@ -21,7 +21,7 @@ let AppModule = AppModule_1 = class AppModule {
             isGlobal: true,
             store: 'memory',
             max: 100,
-            ttl: 60 * 60,
+            ttl: null,
         };
         return {
             module: AppModule_1,

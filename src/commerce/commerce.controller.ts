@@ -41,11 +41,6 @@ export class CommerceController {
     @Body() body: CommerceDto,
   ): Promise<Resp> {
     const header: Header = this.logService.getDataToken(token, req, this.DS);
-    // const header: Header = await this.logService.getDataTokenCache(
-    //   token,
-    //   req,
-    //   this.cacheService,
-    // );
     return this._commerceService.createCommerce(body, header);
   }
 
