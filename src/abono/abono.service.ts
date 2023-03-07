@@ -7,7 +7,7 @@ import { isValid } from '../utils/functions/validAcoountBank';
 
 export interface RespAbono {
   message: string;
-  terminales?: string[];
+  terminal?: string;
   terminales_Error?: string[];
   code?: number;
 }
@@ -17,6 +17,47 @@ export class AbonoService {
   // constructor() {}
 
   async createAbono(
+    terminal: string,
+    commerce: Comercios,
+    cxaCodAfi: string,
+    aboNroCuenta: string,
+    DS: DataSource,
+  ): Promise<RespAbono> {
+    try {
+      const aboCodBanco = aboNroCuenta.slice(0, 4);
+
+      await DS.getRepository(Abonos).save({
+        aboTerminal: terminal,
+        aboCodAfi: cxaCodAfi,
+        aboCodComercio: commerce.comerCod,
+        aboCodBanco: aboCodBanco,
+        aboNroCuenta: aboNroCuenta,
+        aboTipoCuenta: '01',
+        estatusId: 23,
+      });
+
+      const info: RespAbono = {
+        message: '',
+      };
+
+      // if (exist_termianls.length) {
+      //   //info.terminales_Error = exist_termianls.map((term) => term.aboTerminal);
+      //   info.code = 202;
+      // }
+
+      //console.log('creado el abono', abonosSaves);
+      info.message = `${commerce.comerRif} Terminal creado`;
+      return info;
+    } catch (e) {
+      console.log('Abono error:', e);
+      return {
+        message: `Error al crear abono a los terminales, por favor contactar a Tranred`,
+        code: 400,
+      };
+    }
+  }
+
+  async createAbonos(
     terminals: string[],
     commerce: Comercios,
     cxaCodAfi: string,
@@ -65,7 +106,7 @@ export class AbonoService {
 
       //console.log('creado el abono', abonosSaves);
       info.message = `${commerce.comerRif} Terminales creados: ${abonosSaves.length}`;
-      if (terminals.length) info.terminales = terminals;
+      // if (terminals.length) info.terminales = terminals;
       return info;
     } catch (e) {
       console.log('Abono error:', e);

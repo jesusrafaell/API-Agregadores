@@ -1,70 +1,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const carroPago_1 = require("../config/dataSource/carroPago");
-const consultel_1 = require("../config/dataSource/consultel");
-const disglobal_1 = require("../config/dataSource/disglobal");
-const gscomputer_1 = require("../config/dataSource/gscomputer");
-const librePago_1 = require("../config/dataSource/librePago");
+const typeorm_1 = require("typeorm");
+const barrProcess_1 = require("../../utils/barrProcess");
+const dataSource_1 = require("../config/dataSource");
 const sitran_dataSource_1 = require("../config/sitran_dataSource");
-const afi_carropago_1 = require("./afiliados/afi_carropago");
-const afi_gscomputer_1 = require("./afiliados/afi_gscomputer");
-const afi_librepago_1 = require("./afiliados/afi_librepago");
-const afiliadosApi_1 = require("./afiliadosApi");
-const origin_logs_1 = require("./origin_logs");
+const agregador_entity_1 = require("../sitran/models/agregador.entity");
+const modelPos_1 = require("./modelPos");
 sitran_dataSource_1.default.initialize()
     .then(async (DS) => {
-    console.log('Sitran');
-    await (0, origin_logs_1.default)(DS);
-    await librePago_1.default.initialize()
-        .then(async (DS) => {
-        console.log('LibrePago');
-        await (0, afiliadosApi_1.default)(DS, afi_librepago_1.default);
-        await (0, origin_logs_1.default)(DS);
-    })
-        .catch((error) => {
-        console.log(error);
-        process.exit();
-    });
-    await carroPago_1.default.initialize()
-        .then(async (DS) => {
-        console.log('Carropago');
-        await (0, afiliadosApi_1.default)(DS, afi_carropago_1.default);
-        await (0, origin_logs_1.default)(DS);
-    })
-        .catch((error) => {
-        console.log(error);
-        process.exit();
-    });
-    await gscomputer_1.default.initialize()
-        .then(async (DS) => {
-        console.log('GSComputer');
-        await (0, afiliadosApi_1.default)(DS, afi_gscomputer_1.default);
-        await (0, origin_logs_1.default)(DS);
-    })
-        .catch((error) => {
-        console.log(error);
-        process.exit();
-    });
-    await disglobal_1.default.initialize()
-        .then(async (DS) => {
-        console.log('Disglobal');
-        await (0, afiliadosApi_1.default)(DS, afi_gscomputer_1.default);
-        await (0, origin_logs_1.default)(DS);
-    })
-        .catch((error) => {
-        console.log(error);
-        process.exit();
-    });
-    await consultel_1.default.initialize()
-        .then(async (DS) => {
-        console.log('Consultel');
-        await (0, afiliadosApi_1.default)(DS, afi_gscomputer_1.default);
-        await (0, origin_logs_1.default)(DS);
-    })
-        .catch((error) => {
-        console.log(error);
-        process.exit();
-    });
+    try {
+        console.log('Sitran');
+        const agregadores = await DS.getRepository(agregador_entity_1.default).find({
+            where: {
+                isAgr: 1,
+                db: (0, typeorm_1.Not)('MILPAGOS'),
+            },
+        });
+        console.log(agregadores.length, 'Agregadores:');
+        let listDS;
+        agregadores.forEach((agr) => {
+            listDS = Object.assign(Object.assign({}, listDS), { [agr.id]: (0, dataSource_1.default)(agr.host, agr.db) });
+        });
+        await (0, barrProcess_1.BarProcess)(listDS, async (item, DS) => {
+            try {
+                await DS.initialize();
+            }
+            catch (err) {
+                console.log(`Error in int ${DS.options.database}`, err);
+                throw err;
+            }
+        });
+        console.log('Ready, initialize');
+        for (let i = 0; i < Object.keys(listDS).length; i++) {
+            const DS = Object.values(listDS)[i];
+            console.log(DS.options.database);
+            await (0, modelPos_1.default)(DS);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        throw err;
+    }
+    console.log('OK');
     process.exit();
 })
     .catch((err) => {

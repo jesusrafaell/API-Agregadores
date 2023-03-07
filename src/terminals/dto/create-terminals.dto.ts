@@ -40,10 +40,6 @@ export class CreateTerminalsDto {
   @Validate(RifValidation)
   comerRif!: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  comerCantPost!: number;
-
   @IsOptional()
   @IsString()
   @Length(20, 20, error.cuentaBanco)
@@ -53,6 +49,19 @@ export class CreateTerminalsDto {
   @IsNotEmpty(error.textNotEmpty)
   @Length(2, 2, error.textLength)
   prefijo!: string;
+
+  @IsNumber()
+  @IsNotEmpty(error.textNotEmpty)
+  modelo: number;
+
+  @IsString()
+  @IsNotEmpty(error.textNotEmpty)
+  @Length(4, 100, error.textLength)
+  serial!: string;
+
+  // @IsNumber()
+  // @IsNotEmpty()
+  // comerCantPost!: number;
 }
 
 export class ParamTermDto {

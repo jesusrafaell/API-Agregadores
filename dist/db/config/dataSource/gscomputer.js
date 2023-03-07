@@ -4,7 +4,7 @@ const typeorm_1 = require("typeorm");
 const parmetros_config_1 = require("../parmetros.config");
 require("dotenv/config");
 const { DB_HOST_GSC, DB_USER_GSC, DB_PASS_GSC, DB_DATA_GSC } = process.env;
-const GSComputerDS = new typeorm_1.DataSource({
+const MilPagosDS = new typeorm_1.DataSource({
     type: 'mssql',
     host: DB_HOST_GSC,
     username: DB_USER_GSC,
@@ -20,8 +20,8 @@ const GSComputerDS = new typeorm_1.DataSource({
     logging: false,
     entities: parmetros_config_1.entitiesAgregadores,
     migrations: parmetros_config_1.migrationsAgregadores,
-    subscribers: ['./db/subscriber/**/*.ts'],
+    subscribers: ['./src/db/subscriber/**/*.ts'],
     migrationsTableName: 'migrations_api_v1',
 });
-exports.default = GSComputerDS;
+exports.default = MilPagosDS;
 //# sourceMappingURL=gscomputer.js.map

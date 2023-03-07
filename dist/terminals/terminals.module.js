@@ -13,11 +13,19 @@ const terminals_controller_1 = require("./terminals.controller");
 const abono_module_1 = require("../abono/abono.module");
 const commerce_module_1 = require("../commerce/commerce.module");
 const logs_module_1 = require("../logs/logs.module");
+const serial_module_1 = require("../SerialPos/serial.module");
+const modeloPos_module_1 = require("../ModeloPos/modeloPos.module");
 let TerminalsModule = class TerminalsModule {
 };
 TerminalsModule = __decorate([
     (0, common_1.Module)({
-        imports: [commerce_module_1.CommerceModule, abono_module_1.AbonoModule, logs_module_1.LogsModule],
+        imports: [
+            commerce_module_1.CommerceModule,
+            abono_module_1.AbonoModule,
+            logs_module_1.LogsModule,
+            serial_module_1.SerialModule,
+            modeloPos_module_1.ModelPosModule,
+        ],
         controllers: [terminals_controller_1.TerminalsController],
         providers: [terminals_service_1.TerminalsService],
         exports: [terminals_service_1.TerminalsService],

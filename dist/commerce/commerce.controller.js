@@ -20,22 +20,21 @@ const commerce_service_1 = require("./commerce.service");
 const logs_service_1 = require("../logs/logs.service");
 const dto_1 = require("./dto");
 let CommerceController = class CommerceController {
-    constructor(_commerceService, logService, DS, cacheService) {
+    constructor(_commerceService, logService, cacheService) {
         this._commerceService = _commerceService;
         this.logService = logService;
-        this.DS = DS;
         this.cacheService = cacheService;
     }
     async createCommerce(token, req, body) {
         const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._commerceService.createCommerce(body, header);
     }
-    getCommerce(token, req, params) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async getCommerce(token, req, params) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._commerceService.getCommerceData(params.comerRif, header);
     }
-    getCommercePost(token, req, params) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async getCommercePost(token, req, params) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._commerceService.getCommerceData(params.comerRif, header);
     }
     async getAllCommerce(token, req) {
@@ -82,10 +81,9 @@ CommerceController = __decorate([
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     (0, common_1.Controller)('commerce'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(2, (0, common_1.Inject)('DS')),
-    __param(3, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
+    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [commerce_service_1.CommerceService,
-        logs_service_1.LogsService, Object, Object])
+        logs_service_1.LogsService, Object])
 ], CommerceController);
 exports.CommerceController = CommerceController;
 //# sourceMappingURL=commerce.controller.js.map

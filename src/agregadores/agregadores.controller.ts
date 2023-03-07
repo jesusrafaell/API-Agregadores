@@ -20,7 +20,6 @@ import { AgregadoresService } from './agregadores.service';
 import Agregador from '../db/sitran/models/agregador.entity';
 import { DataSource } from 'typeorm';
 import { Cache } from 'cache-manager';
-import SitranDS from '../db/config/sitran_dataSource';
 import agredadorDS from '../db/config/dataSource';
 import ProcessPrint from '../utils/barrProcess';
 import { IListStatus } from './dto';
@@ -33,15 +32,17 @@ export class AgregadoresContronller {
   constructor(
     // private readonly logService: LogsService,
     private readonly agreadoresService: AgregadoresService,
-    @Inject(CACHE_MANAGER) private cacheService: Cache,
-    @Inject('DS') private DS: IAgregadoresDS,
+    @Inject(CACHE_MANAGER) private cacheService: Cache, // @Inject('DS') private DS: IAgregadoresDS,
   ) {
-    const init = async () => this.saveAgrInCache();
+    const init = async () => {
+      await this.agreadoresService.start();
+      console.log('Connected');
+    };
     init();
   }
 
   async saveAgrInCache(_DS?: IAgregadoresDS): Promise<string[]> {
-    const DS = _DS ? _DS : this.DS;
+    const DS = _DS;
     const list: string[] = [];
     for (const item in DS) {
       // console.log('item', item);
@@ -51,8 +52,9 @@ export class AgregadoresContronller {
       list.push(dataAgr.options.database as string);
       // console.log(`Cache id: ${item}, name: ${dataAgr.options.database}`);
       const ds: DataSource = await this.cacheService.get(item);
-      console.log('Cache', item, '->', ds.options.database);
+      console.log('✅  Cache:', item, '->', ds.options.database);
     }
+
     return list;
   }
 
@@ -79,12 +81,7 @@ export class AgregadoresContronller {
 
   @Get('reload')
   async reload(): Promise<{ message: string; new_agr?: string[] }> {
-    const agregadores = await SitranDS.getRepository(Agregador).find({
-      where: {
-        isAgr: 1,
-        // db: 'DISGLOBAL', //delete
-      },
-    });
+    const agregadores = await this.agreadoresService.all();
 
     let listDS: IAgregadoresDS;
 
@@ -118,12 +115,7 @@ export class AgregadoresContronller {
 
   @Get('status')
   async status(): Promise<{ listStatus: IListStatus }> {
-    const agregadores = await SitranDS.getRepository(Agregador).find({
-      where: {
-        isAgr: 1,
-        // db: 'DISGLOBAL', //delete
-      },
-    });
+    const agregadores = await this.agreadoresService.all();
 
     let listDS: IListStatus;
 
@@ -159,19 +151,14 @@ export class AgregadoresContronller {
     message: string;
     list_resets?: string[];
   }> {
-    const agregadores = await SitranDS.getRepository(Agregador).find({
-      where: {
-        isAgr: 1,
-        // db: 'DISGLOBAL', //delete
-      },
-    });
+    const agregadores = await this.agreadoresService.all();
 
     let listDS: IAgregadoresDS;
 
     for (const index in agregadores) {
       const item = agregadores[index];
       const id = item.id.toString();
-      // console.log('id', id);
+      console.log('id', id);
       const ds: DataSource | undefined = await this.cacheService.get(id);
       // console.log(ds);
 
@@ -198,6 +185,6 @@ export class AgregadoresContronller {
       }
     }
 
-    return { message: 'Not DB Reset' };
+    return { message: 'Not Reset, Connection is stable' };
   }
 }

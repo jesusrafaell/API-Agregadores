@@ -7,8 +7,7 @@ import { IListStatus } from './dto';
 export declare class AgregadoresContronller {
     private readonly agreadoresService;
     private cacheService;
-    private DS;
-    constructor(agreadoresService: AgregadoresService, cacheService: Cache, DS: IAgregadoresDS);
+    constructor(agreadoresService: AgregadoresService, cacheService: Cache);
     saveAgrInCache(_DS?: IAgregadoresDS): Promise<string[]>;
     getAgregadores(token: string, req: Request, body: {
         name: string;

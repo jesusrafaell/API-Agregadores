@@ -25,7 +25,7 @@ const LibrepagoDS = new DataSource({
   entities: entitiesAgregadores,
   migrations: migrationsAgregadores,
   subscribers: ['./db/subscriber/**/*.ts'],
-  migrationsTableName: 'migrations_api_v1',
+  migrationsTableName: 'migrations_api_v2',
 });
 
 export default LibrepagoDS;

@@ -63,6 +63,7 @@ export const createNewDatabase = async (dbName: string) => {
 
 export const createTablesDatabase = async (dbName: string) => {
   const pool = new sql.ConnectionPool({ ...config, database: dbName });
+  console.log(pool);
   // console.log(pool);
   // await pool.connect().then(async () => {
   //   await pool

@@ -9,9 +9,10 @@ export declare class SizeZeroOrOne implements ValidatorConstraintInterface {
 }
 export declare class CreateTerminalsDto {
     comerRif: string;
-    comerCantPost: number;
     comerCuentaBanco?: string;
     prefijo: string;
+    modelo: number;
+    serial: string;
 }
 export declare class ParamTermDto {
     terminal: string;

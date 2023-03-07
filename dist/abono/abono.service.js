@@ -12,7 +12,33 @@ const abono_entity_1 = require("../db/models/abono.entity");
 const bancos_entity_1 = require("../db/models/bancos.entity");
 const validAcoountBank_1 = require("../utils/functions/validAcoountBank");
 let AbonoService = class AbonoService {
-    async createAbono(terminals, commerce, cxaCodAfi, aboNroCuenta, DS) {
+    async createAbono(terminal, commerce, cxaCodAfi, aboNroCuenta, DS) {
+        try {
+            const aboCodBanco = aboNroCuenta.slice(0, 4);
+            await DS.getRepository(abono_entity_1.default).save({
+                aboTerminal: terminal,
+                aboCodAfi: cxaCodAfi,
+                aboCodComercio: commerce.comerCod,
+                aboCodBanco: aboCodBanco,
+                aboNroCuenta: aboNroCuenta,
+                aboTipoCuenta: '01',
+                estatusId: 23,
+            });
+            const info = {
+                message: '',
+            };
+            info.message = `${commerce.comerRif} Terminal creado`;
+            return info;
+        }
+        catch (e) {
+            console.log('Abono error:', e);
+            return {
+                message: `Error al crear abono a los terminales, por favor contactar a Tranred`,
+                code: 400,
+            };
+        }
+    }
+    async createAbonos(terminals, commerce, cxaCodAfi, aboNroCuenta, DS) {
         try {
             console.log('crear abono');
             const aboCodBanco = aboNroCuenta.slice(0, 4);
@@ -31,8 +57,6 @@ let AbonoService = class AbonoService {
                 message: '',
             };
             info.message = `${commerce.comerRif} Terminales creados: ${abonosSaves.length}`;
-            if (terminals.length)
-                info.terminales = terminals;
             return info;
         }
         catch (e) {

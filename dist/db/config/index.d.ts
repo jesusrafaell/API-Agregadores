@@ -1,2 +1,1 @@
-import { IAgregadoresDS } from './dto';
-export declare const Conections: () => Promise<IAgregadoresDS>;
+export declare const Conections: () => Promise<void>;

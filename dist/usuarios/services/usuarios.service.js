@@ -5,15 +5,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuariosService = void 0;
 const common_1 = require("@nestjs/common");
-const sitran_dataSource_1 = require("../../db/config/sitran_dataSource");
 const usuarios_entity_1 = require("../../db/sitran/models/usuarios.entity");
 require("dotenv/config");
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
 let UsuariosService = class UsuariosService {
+    constructor(userRepository) {
+        this.userRepository = userRepository;
+    }
     async getUsuario(user) {
-        return await sitran_dataSource_1.default.getRepository(usuarios_entity_1.default).findOne({
+        return await this.userRepository.findOne({
             where: { login: user.login },
             relations: ['status', 'profile', 'profile.department', 'agregador'],
         });
@@ -25,7 +35,9 @@ let UsuariosService = class UsuariosService {
     }
 };
 UsuariosService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_2.InjectRepository)(usuarios_entity_1.default)),
+    __metadata("design:paramtypes", [typeorm_1.Repository])
 ], UsuariosService);
 exports.UsuariosService = UsuariosService;
 //# sourceMappingURL=usuarios.service.js.map

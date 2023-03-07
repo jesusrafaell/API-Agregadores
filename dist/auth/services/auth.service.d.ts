@@ -8,7 +8,6 @@ export declare class AuthService {
     private readonly jwtService;
     private readonly logService;
     constructor(userService: UsuariosService, jwtService: JwtService, logService: LogsService);
-    execCommand(password: string): Promise<unknown>;
     jwtLogin(email: string, id: number, agr: Agregador): Promise<Token>;
     login(user: LoginUsuarioDto): Promise<ResAccesToken>;
 }

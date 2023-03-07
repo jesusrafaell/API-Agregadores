@@ -1,5 +1,6 @@
 // import { setInterval } from 'timers';
 
+import { DataSource } from 'typeorm';
 import { IAgregadoresDS } from '../db/config/dto';
 
 const slots = 10;
@@ -27,6 +28,45 @@ export default async function ProcessPrint(listInitDS: IAgregadoresDS) {
       } catch (err) {
         throw { msg: nameDS };
       }
+    }
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        process.stdout.write(
+          `${barrProcess(
+            i,
+            Object.keys(listInitDS).length * slots,
+            6 * slots,
+          )}\r`,
+        );
+        resolve(i);
+      }, 20),
+    );
+  }
+  console.log();
+}
+
+export async function BarProcess(
+  listInitDS: IAgregadoresDS,
+  callback: (item: string, dataAgr: DataSource) => Promise<void>,
+) {
+  let index = 0;
+  for (let i = 0; i <= Object.keys(listInitDS).length * slots; i++) {
+    if (i % slots === 0 && index < Object.keys(listInitDS).length) {
+      const item = Object.keys(listInitDS)[index];
+      const DS = Object.values(listInitDS)[index];
+      await callback(item, DS);
+      index++;
+      /*
+      void
+      try {
+      // const DS = Object.values(listInitDS)[index];
+        const nameDS: string = DS.options.database as string;
+        await DS.initialize();
+        index++;
+      } catch (err) {
+        throw { msg: nameDS };
+      }
+      */
     }
     await new Promise((resolve) =>
       setTimeout(() => {

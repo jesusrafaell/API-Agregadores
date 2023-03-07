@@ -7,7 +7,7 @@ import 'dotenv/config';
 
 const { DB_HOST_GSC, DB_USER_GSC, DB_PASS_GSC, DB_DATA_GSC } = process.env;
 
-const GSComputerDS = new DataSource({
+const MilPagosDS = new DataSource({
   type: 'mssql',
   host: DB_HOST_GSC,
   username: DB_USER_GSC,
@@ -23,8 +23,8 @@ const GSComputerDS = new DataSource({
   logging: false,
   entities: entitiesAgregadores,
   migrations: migrationsAgregadores,
-  subscribers: ['./db/subscriber/**/*.ts'],
+  subscribers: ['./src/db/subscriber/**/*.ts'],
   migrationsTableName: 'migrations_api_v1',
 });
 
-export default GSComputerDS;
+export default MilPagosDS;

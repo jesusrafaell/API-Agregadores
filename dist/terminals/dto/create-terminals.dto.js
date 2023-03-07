@@ -47,11 +47,6 @@ __decorate([
     __metadata("design:type", String)
 ], CreateTerminalsDto.prototype, "comerRif", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], CreateTerminalsDto.prototype, "comerCantPost", void 0);
-__decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(20, 20, messages_validator_1.default.cuentaBanco),
@@ -63,6 +58,17 @@ __decorate([
     (0, class_validator_1.Length)(2, 2, messages_validator_1.default.textLength),
     __metadata("design:type", String)
 ], CreateTerminalsDto.prototype, "prefijo", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNotEmpty)(messages_validator_1.default.textNotEmpty),
+    __metadata("design:type", Number)
+], CreateTerminalsDto.prototype, "modelo", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(messages_validator_1.default.textNotEmpty),
+    (0, class_validator_1.Length)(4, 100, messages_validator_1.default.textLength),
+    __metadata("design:type", String)
+], CreateTerminalsDto.prototype, "serial", void 0);
 exports.CreateTerminalsDto = CreateTerminalsDto;
 class ParamTermDto {
 }

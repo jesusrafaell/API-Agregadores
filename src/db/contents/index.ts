@@ -1,69 +1,53 @@
-import CarropagoDS from '../config/dataSource/carroPago';
-import CONSULTELDS from '../config/dataSource/consultel';
-import DISGLOBALDS from '../config/dataSource/disglobal';
-import GSComputerDS from '../config/dataSource/gscomputer';
-import LibrepagoDS from '../config/dataSource/librePago';
+import { CLIENT_RENEG_LIMIT } from 'tls';
+import { DataSource, Not } from 'typeorm';
+import { BarProcess } from '../../utils/barrProcess';
+import agredadorDS from '../config/dataSource';
+import { IAgregadoresDS } from '../config/dto';
 import SitranDS from '../config/sitran_dataSource';
-import list_afi_carropago from './afiliados/afi_carropago';
-import list_afi_gscomputer from './afiliados/afi_gscomputer';
-import list_afi_librepago from './afiliados/afi_librepago';
-import afiliados_api from './afiliadosApi';
-import origin_logs from './origin_logs';
+import Agregador from '../sitran/models/agregador.entity';
+import modelPos from './modelPos';
 
 SitranDS.initialize()
   .then(async (DS) => {
-    console.log('Sitran');
-    await origin_logs(DS);
-    await LibrepagoDS.initialize()
-      .then(async (DS) => {
-        console.log('LibrePago');
-        await afiliados_api(DS, list_afi_librepago);
-        await origin_logs(DS);
-      })
-      .catch((error) => {
-        console.log(error);
-        process.exit();
+    try {
+      console.log('Sitran');
+      const agregadores = await DS.getRepository(Agregador).find({
+        where: {
+          isAgr: 1,
+          db: Not('MILPAGOS'),
+        },
       });
-    await CarropagoDS.initialize()
-      .then(async (DS) => {
-        console.log('Carropago');
-        await afiliados_api(DS, list_afi_carropago);
-        await origin_logs(DS);
-      })
-      .catch((error) => {
-        console.log(error);
-        process.exit();
+      console.log(agregadores.length, 'Agregadores:');
+      let listDS: IAgregadoresDS;
+      agregadores.forEach((agr) => {
+        listDS = {
+          ...listDS,
+          [agr.id]: agredadorDS(agr.host, agr.db),
+        };
       });
-    await GSComputerDS.initialize()
-      .then(async (DS) => {
-        console.log('GSComputer');
-        await afiliados_api(DS, list_afi_gscomputer);
-        await origin_logs(DS);
-      })
-      .catch((error) => {
-        console.log(error);
-        process.exit();
+
+      await BarProcess(listDS, async (item: string, DS: DataSource) => {
+        try {
+          await DS.initialize();
+        } catch (err) {
+          console.log(`Error in int ${DS.options.database}`, err);
+          throw err;
+        }
       });
-    await DISGLOBALDS.initialize()
-      .then(async (DS) => {
-        console.log('Disglobal');
-        await afiliados_api(DS, list_afi_gscomputer);
-        await origin_logs(DS);
-      })
-      .catch((error) => {
-        console.log(error);
-        process.exit();
-      });
-    await CONSULTELDS.initialize()
-      .then(async (DS) => {
-        console.log('Consultel');
-        await afiliados_api(DS, list_afi_gscomputer);
-        await origin_logs(DS);
-      })
-      .catch((error) => {
-        console.log(error);
-        process.exit();
-      });
+
+      console.log('Ready, initialize');
+
+      for (let i = 0; i < Object.keys(listDS).length; i++) {
+        //llamda al content
+        const DS: DataSource = Object.values(listDS)[i];
+        console.log(DS.options.database);
+        await modelPos(DS);
+      }
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+    console.log('OK');
     process.exit();
   })
   .catch((err) => {

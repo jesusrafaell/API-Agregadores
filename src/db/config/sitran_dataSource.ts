@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import 'dotenv/config';
 import { globalModels } from './parmetros.config';
 
+import 'dotenv/config';
 const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } =
   process.env;
 

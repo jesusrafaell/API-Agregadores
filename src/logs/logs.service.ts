@@ -4,17 +4,21 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Header, Log } from './dto/dto-logs.dto';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import general_logs_api from '../db/global/models/general_logs_api.entity';
 import Agregador from '../db/sitran/models/agregador.entity';
-import { IAgregadoresDS } from '../db/config/dto';
 import { Cache } from 'cache-manager';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class LogsService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectRepository(general_logs_api)
+    private generalLogRepository: Repository<general_logs_api>,
+  ) {}
 
   async saveLogsToken(log: Log) {
     console.log(log);
@@ -24,6 +28,20 @@ export class LogsService {
     // } catch (err) {
     //   console.log({ msg: `Error en guardar en log`, log: dataLog });
     // }
+  }
+
+  async saveLogsSitran(log: Log) {
+    const { id, method, path, msg } = log;
+    const dataLog: general_logs_api = {
+      id_user: id,
+      descript: `[method:${method}]::[path:${path}]::[msg:${msg}]`,
+      id_origin_logs: 1, //api
+    };
+    try {
+      await this.generalLogRepository.save(dataLog);
+    } catch (err) {
+      console.log({ msg: `Error en guardar en log`, log: dataLog });
+    }
   }
 
   async saveLogs(log: Log, DS: DataSource) {
@@ -51,7 +69,7 @@ export class LogsService {
   //     const decode = this.jwtService.decode(token);
   //     const { sub, agr } = decode as unknown as { sub: number; agr: Agregador };
   //     // console.log('id:', agr.id);
-  //     console.log('total', Object.values(agregadores).length);
+  //     // console.log('total', Object.values(agregadores).length);
   //     const DS = agregadores[agr.id];
   //     if (!DS) {
   //       console.log('No existe el agreador');

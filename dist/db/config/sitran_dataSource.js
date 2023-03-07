@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-require("dotenv/config");
 const parmetros_config_1 = require("./parmetros.config");
+require("dotenv/config");
 const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } = process.env;
 const SitranDS = new typeorm_1.DataSource({
     type: 'mssql',

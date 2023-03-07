@@ -1,7 +1,3 @@
-import { DynamicModule } from '@nestjs/common';
-import { IAgregadoresDS } from './db/config/dto';
+import 'dotenv/config';
 export declare class AppModule {
-    static forRoot(config: {
-        DS: IAgregadoresDS;
-    }): DynamicModule;
 }

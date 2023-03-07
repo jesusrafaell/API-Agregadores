@@ -11,28 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const child_process_1 = require("child_process");
 const jwt_1 = require("@nestjs/jwt");
 const usuarios_service_1 = require("../../usuarios/services/usuarios.service");
 const logs_service_1 = require("../../logs/logs.service");
 const bcrypt_1 = require("bcrypt");
-const sitran_dataSource_1 = require("../../db/config/sitran_dataSource");
 let AuthService = class AuthService {
     constructor(userService, jwtService, logService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.logService = logService;
-    }
-    execCommand(password) {
-        const cmd = `java -jar java.encript/java.jar ${password}`;
-        return new Promise((resolve) => {
-            (0, child_process_1.exec)(cmd, (error, stdout, stderr) => {
-                if (error) {
-                    console.warn(error);
-                }
-                resolve(stdout ? stdout : stderr);
-            });
-        });
     }
     async jwtLogin(email, id, agr) {
         const payload = { email, sub: id, agr };
@@ -59,7 +46,7 @@ let AuthService = class AuthService {
             path: '/auth/login',
             msg: `Login de Usuario: ${usuario.email}`,
         };
-        await this.logService.saveLogs(log, sitran_dataSource_1.default);
+        await this.logService.saveLogsSitran(log);
         return {
             agr: usuario.agregador.name,
             access_token: token.access_token,

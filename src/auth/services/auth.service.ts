@@ -26,18 +26,6 @@ export class AuthService {
     private readonly logService: LogsService,
   ) {}
 
-  execCommand(password: string) {
-    const cmd = `java -jar java.encript/java.jar ${password}`;
-    return new Promise((resolve) => {
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-          console.warn(error);
-        }
-        resolve(stdout ? stdout : stderr);
-      });
-    });
-  }
-
   async jwtLogin(email: string, id: number, agr: Agregador): Promise<Token> {
     const payload = { email, sub: id, agr };
     return {
@@ -61,7 +49,6 @@ export class AuthService {
     if (!validPerfil) {
       throw new UnauthorizedException('Este Usuario no tiene acceso al API');
     }
-    // console.log(usuario.agregador);
 
     const token = await this.jwtLogin(
       usuario.email,
@@ -77,7 +64,7 @@ export class AuthService {
     };
 
     //[3312]
-    await this.logService.saveLogs(log, SitranDS);
+    await this.logService.saveLogsSitran(log);
 
     return {
       agr: usuario.agregador.name,

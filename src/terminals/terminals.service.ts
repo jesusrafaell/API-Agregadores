@@ -13,6 +13,8 @@ import Abonos from '../db/models/abono.entity';
 import { ITerminalAll } from './dto';
 import Bancos from '../db/models/bancos.entity';
 import { isValid } from '../utils/functions/validAcoountBank';
+import { ModelPosService } from '../ModeloPos/modeloPos.service';
+import { SerialService } from '../SerialPos/serial.service';
 const { REACT_APP_APIURL_APT } = process.env;
 
 export interface RespTerm {
@@ -37,13 +39,17 @@ export class TerminalsService {
     private logService: LogsService,
     private commerceService: CommerceService,
     private abonoService: AbonoService,
+    private modelService: ModelPosService,
+    private serialService: SerialService,
   ) {}
 
   async createTerminals(
     comerRif: string,
-    comerCantPost: number,
+    // comerCantPost: number,
     comerCuentaBanco: string,
     prefijo: string,
+    id_modelo: number,
+    serial: string,
     header: Header,
   ): Promise<RespTerm> {
     const { DS } = header;
@@ -71,6 +77,18 @@ export class TerminalsService {
     if (comerCuentaBanco)
       await this.abonoService.validAccountNumber(comerCuentaBanco, DS);
 
+    const modelo = await this.modelService.validModel(id_modelo, DS);
+    if (!modelo) {
+      throw new BadRequestException(
+        `No existe el modelo Codigo: [${id_modelo}] en ${header.agr}`,
+      );
+    }
+
+    const getSerial = await this.serialService.getSerial(serial, DS);
+    if (getSerial) {
+      throw new BadRequestException(`Serial en uso [${header.agr}]`);
+    }
+
     const aboNroCuenta = comerCuentaBanco || commerce.comerCuentaBanco;
 
     //validar el prefijo
@@ -90,8 +108,9 @@ export class TerminalsService {
           });
         });
       const prefijos = resPref.data.Data;
-      console.log('Resp APT', prefijos);
+
       const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
+
       console.log(`Prefijo ${prefijo} -> ${validPrefijo ? 'Si' : 'No'}`);
       if (!validPrefijo) {
         throw new BadRequestException({
@@ -100,14 +119,13 @@ export class TerminalsService {
       }
 
       //crear terminal
-      console.log(`Crear  ${comerCantPost} Terminals`);
       const responseSP: AxiosResponse<{ Terminal: string[]; ok: boolean }> =
         await axios
           .post(
             `${REACT_APP_APIURL_APT}new`,
             {
               afiliado: `${Number(afiliado.cxaCodAfi)}`,
-              cantidad: comerCantPost,
+              cantidad: 1,
               prefijo,
             },
             { headers: { authorization: header.token } },
@@ -120,6 +138,7 @@ export class TerminalsService {
             });
           });
       termAPt = responseSP.data.Terminal[0].split(',');
+      // console.log('termAPt', responseSP.data.Terminal[0].split(','));
 
       console.log('APT api', termAPt);
 
@@ -131,26 +150,46 @@ export class TerminalsService {
       });
     }
 
+    const terminal = termAPt[0];
+
     if (!termAPt.length) {
-      throw new NotFoundException('No hay termianles disponibles');
+      throw new NotFoundException('No hay terminales disponibles');
     } else {
+      //Save Abono
       const abono: RespAbono = await this.abonoService.createAbono(
-        termAPt,
+        terminal,
         commerce,
         afiliado.cxaCodAfi,
         aboNroCuenta,
         DS,
       );
+
       if (!abono || abono.code === 400) {
         throw new BadRequestException({
-          message: `Error al crear abono a los terminales, por favor contactar a Tranred`,
+          message: `Error al crear abono del terminal, por favor contactar a Tranred`,
           terminales: termAPt,
         });
       }
 
-      if (abono.terminales.length > 0) {
+      //Save Serial
+      const saveSerial = await this.serialService.saveSerialTerminal(
+        terminal,
+        serial,
+        id_modelo,
+        DS,
+      );
+
+      console.log(
+        'Serial:',
+        saveSerial.serial,
+        saveSerial.id_modelo,
+        saveSerial.terminal,
+      );
+
+      if (abono) {
         header.log.msg = `Se crearon ${termAPt.length} terminales`;
         await this.logService.saveLogs(header.log, DS);
+        console.log('terminal creado');
         return abono;
       }
       throw new BadRequestException({

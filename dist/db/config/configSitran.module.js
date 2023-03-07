@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
+require("dotenv/config");
+const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } = process.env;
 const configModule = [
     config_1.ConfigModule.forRoot({ isGlobal: true }),
     typeorm_1.TypeOrmModule.forRootAsync({
@@ -9,11 +11,10 @@ const configModule = [
         inject: [config_1.ConfigService],
         useFactory: () => ({
             type: 'mssql',
-            host: process.env.DB_HOST,
-            database: process.env.DB_DATA,
-            port: Number(process.env.DB_PORT),
-            username: process.env.DB_USER,
-            password: process.env.DB_PASS,
+            host: DB_HOST_SITRAN,
+            username: DB_USER_SITRAN,
+            password: DB_PASS_SITRAN,
+            database: DB_DATA_SITRAN,
             logging: false,
             options: {
                 encrypt: true,
@@ -21,6 +22,7 @@ const configModule = [
             extra: {
                 trustServerCertificate: true,
             },
+            migrationsTableName: 'migrations_api_v1',
         }),
     }),
 ];

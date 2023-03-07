@@ -19,14 +19,18 @@ const axios_1 = require("axios");
 const abono_entity_1 = require("../db/models/abono.entity");
 const bancos_entity_1 = require("../db/models/bancos.entity");
 const validAcoountBank_1 = require("../utils/functions/validAcoountBank");
+const modeloPos_service_1 = require("../ModeloPos/modeloPos.service");
+const serial_service_1 = require("../SerialPos/serial.service");
 const { REACT_APP_APIURL_APT } = process.env;
 let TerminalsService = class TerminalsService {
-    constructor(logService, commerceService, abonoService) {
+    constructor(logService, commerceService, abonoService, modelService, serialService) {
         this.logService = logService;
         this.commerceService = commerceService;
         this.abonoService = abonoService;
+        this.modelService = modelService;
+        this.serialService = serialService;
     }
-    async createTerminals(comerRif, comerCantPost, comerCuentaBanco, prefijo, header) {
+    async createTerminals(comerRif, comerCuentaBanco, prefijo, id_modelo, serial, header) {
         const { DS } = header;
         const commerce = await this.commerceService.getCommerce(comerRif, DS);
         if (!commerce)
@@ -37,6 +41,14 @@ let TerminalsService = class TerminalsService {
         console.log('Afiliado', Number(afiliado.cxaCodAfi));
         if (comerCuentaBanco)
             await this.abonoService.validAccountNumber(comerCuentaBanco, DS);
+        const modelo = await this.modelService.validModel(id_modelo, DS);
+        if (!modelo) {
+            throw new common_1.BadRequestException(`No existe el modelo Codigo: [${id_modelo}] en ${header.agr}`);
+        }
+        const getSerial = await this.serialService.getSerial(serial, DS);
+        if (getSerial) {
+            throw new common_1.BadRequestException(`Serial en uso [${header.agr}]`);
+        }
         const aboNroCuenta = comerCuentaBanco || commerce.comerCuentaBanco;
         let termAPt;
         try {
@@ -50,7 +62,6 @@ let TerminalsService = class TerminalsService {
                 });
             });
             const prefijos = resPref.data.Data;
-            console.log('Resp APT', prefijos);
             const validPrefijo = prefijos.find((pref) => prefijo === `${pref.value}`);
             console.log(`Prefijo ${prefijo} -> ${validPrefijo ? 'Si' : 'No'}`);
             if (!validPrefijo) {
@@ -58,11 +69,10 @@ let TerminalsService = class TerminalsService {
                     message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
                 });
             }
-            console.log(`Crear  ${comerCantPost} Terminals`);
             const responseSP = await axios_1.default
                 .post(`${REACT_APP_APIURL_APT}new`, {
                 afiliado: `${Number(afiliado.cxaCodAfi)}`,
-                cantidad: comerCantPost,
+                cantidad: 1,
                 prefijo,
             }, { headers: { authorization: header.token } })
                 .catch((err) => {
@@ -81,20 +91,24 @@ let TerminalsService = class TerminalsService {
                 message: err.message || 'Error APT',
             });
         }
+        const terminal = termAPt[0];
         if (!termAPt.length) {
-            throw new common_1.NotFoundException('No hay termianles disponibles');
+            throw new common_1.NotFoundException('No hay terminales disponibles');
         }
         else {
-            const abono = await this.abonoService.createAbono(termAPt, commerce, afiliado.cxaCodAfi, aboNroCuenta, DS);
+            const abono = await this.abonoService.createAbono(terminal, commerce, afiliado.cxaCodAfi, aboNroCuenta, DS);
             if (!abono || abono.code === 400) {
                 throw new common_1.BadRequestException({
-                    message: `Error al crear abono a los terminales, por favor contactar a Tranred`,
+                    message: `Error al crear abono del terminal, por favor contactar a Tranred`,
                     terminales: termAPt,
                 });
             }
-            if (abono.terminales.length > 0) {
+            const saveSerial = await this.serialService.saveSerialTerminal(terminal, serial, id_modelo, DS);
+            console.log('Serial:', saveSerial.serial, saveSerial.id_modelo, saveSerial.terminal);
+            if (abono) {
                 header.log.msg = `Se crearon ${termAPt.length} terminales`;
                 await this.logService.saveLogs(header.log, DS);
+                console.log('terminal creado');
                 return abono;
             }
             throw new common_1.BadRequestException({
@@ -176,7 +190,9 @@ TerminalsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [logs_service_1.LogsService,
         commerce_service_1.CommerceService,
-        abono_service_1.AbonoService])
+        abono_service_1.AbonoService,
+        modeloPos_service_1.ModelPosService,
+        serial_service_1.SerialService])
 ], TerminalsService);
 exports.TerminalsService = TerminalsService;
 //# sourceMappingURL=terminals.service.js.map

@@ -9,12 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogsModule = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const typeorm_1 = require("@nestjs/typeorm");
+const general_logs_api_entity_1 = require("../db/global/models/general_logs_api.entity");
 const logs_service_1 = require("./logs.service");
 let LogsModule = class LogsModule {
 };
 LogsModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            typeorm_1.TypeOrmModule.forFeature([general_logs_api_entity_1.default]),
             jwt_1.JwtModule.register({
                 secret: process.env.SECRET_KEY,
                 signOptions: { expiresIn: '4h' },

@@ -20,25 +20,25 @@ const create_terminals_dto_1 = require("./dto/create-terminals.dto");
 const put_terminals_dto_1 = require("./dto/put-terminals.dto");
 const terminals_service_1 = require("./terminals.service");
 let TerminalsController = class TerminalsController {
-    constructor(_TerminalsService, logService, DS) {
+    constructor(_TerminalsService, logService, cacheService) {
         this._TerminalsService = _TerminalsService;
         this.logService = logService;
-        this.DS = DS;
+        this.cacheService = cacheService;
     }
-    createTerminals(token, req, body) {
-        const header = this.logService.getDataToken(token, req, this.DS);
-        return this._TerminalsService.createTerminals(body.comerRif, body.comerCantPost, body.comerCuentaBanco, body.prefijo, header);
+    async createTerminals(token, req, body) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
+        return this._TerminalsService.createTerminals(body.comerRif, body.comerCuentaBanco, body.prefijo, body.modelo, body.serial, header);
     }
-    getAllTerminal(token, req) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async getAllTerminal(token, req) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._TerminalsService.getAllTerminals(header);
     }
-    PutChangeBank(token, params, body, req) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async PutChangeBank(token, params, body, req) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         return this._TerminalsService.updateAccountNumber(params.terminal, body.comerCuentaBanco, header);
     }
-    PutChangeStatus(token, req, params, body) {
-        const header = this.logService.getDataToken(token, req, this.DS);
+    async PutChangeStatus(token, req, params, body) {
+        const header = await this.logService.getDataTokenCache(token, req, this.cacheService);
         console.log('Data', params.terminal, body.status);
         return this._TerminalsService.updateStatus(params.terminal, body.status, header);
     }
@@ -86,7 +86,7 @@ TerminalsController = __decorate([
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('terminal'),
-    __param(2, (0, common_1.Inject)('DS')),
+    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [terminals_service_1.TerminalsService,
         logs_service_1.LogsService, Object])
 ], TerminalsController);

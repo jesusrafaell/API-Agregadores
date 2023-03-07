@@ -19,7 +19,6 @@ import { Request } from 'express';
 import { LogsService } from '../logs/logs.service';
 import { Header } from '../logs/dto/dto-logs.dto';
 import { ICommerceAll, ICommerceGet, RifDto } from './dto';
-import { IAgregadoresDS } from '../db/config/dto';
 
 import { Cache } from 'cache-manager';
 
@@ -30,7 +29,6 @@ export class CommerceController {
   constructor(
     private readonly _commerceService: CommerceService,
     private readonly logService: LogsService,
-    @Inject('DS') private readonly DS: IAgregadoresDS,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
@@ -40,7 +38,6 @@ export class CommerceController {
     @Req() req: Request,
     @Body() body: CommerceDto,
   ): Promise<Resp> {
-    // const header: Header = this.logService.getDataToken(token, req, this.DS);
     const header: Header = await this.logService.getDataTokenCache(
       token,
       req,
@@ -50,22 +47,30 @@ export class CommerceController {
   }
 
   @Get('/rif/:comerRif')
-  getCommerce(
+  async getCommerce(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: RifDto,
   ): Promise<ICommerceGet> {
-    const header: Header = this.logService.getDataToken(token, req, this.DS);
+    const header: Header = await this.logService.getDataTokenCache(
+      token,
+      req,
+      this.cacheService,
+    );
     return this._commerceService.getCommerceData(params.comerRif, header);
   }
 
   @Post('/rif/:comerRif')
-  getCommercePost(
+  async getCommercePost(
     @Headers('authorization') token: string,
     @Req() req: Request,
     @Param() params: RifDto,
   ): Promise<ICommerceGet> {
-    const header: Header = this.logService.getDataToken(token, req, this.DS);
+    const header: Header = await this.logService.getDataTokenCache(
+      token,
+      req,
+      this.cacheService,
+    );
     return this._commerceService.getCommerceData(params.comerRif, header);
   }
 
@@ -74,8 +79,6 @@ export class CommerceController {
     @Headers('authorization') token: string,
     @Req() req: Request,
   ): Promise<ICommerceAll> {
-    //const header: Header = this.logService.getDataToken(token, req, this.DS);
-    // const header: Header = this.logService.getDataToken(token, req, this.DS);
     const header: Header = await this.logService.getDataTokenCache(
       token,
       req,

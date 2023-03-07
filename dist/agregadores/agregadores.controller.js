@@ -16,28 +16,28 @@ exports.AgregadoresContronller = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/jwt/jwt-auth.guard");
 const agregadores_service_1 = require("./agregadores.service");
-const agregador_entity_1 = require("../db/sitran/models/agregador.entity");
-const sitran_dataSource_1 = require("../db/config/sitran_dataSource");
 const dataSource_1 = require("../db/config/dataSource");
 const barrProcess_1 = require("../utils/barrProcess");
 const afiliados_api_entity_1 = require("../db/models/afiliados_api.entity");
 let AgregadoresContronller = class AgregadoresContronller {
-    constructor(agreadoresService, cacheService, DS) {
+    constructor(agreadoresService, cacheService) {
         this.agreadoresService = agreadoresService;
         this.cacheService = cacheService;
-        this.DS = DS;
-        const init = async () => this.saveAgrInCache();
+        const init = async () => {
+            await this.agreadoresService.start();
+            console.log('Connected');
+        };
         init();
     }
     async saveAgrInCache(_DS) {
-        const DS = _DS ? _DS : this.DS;
+        const DS = _DS;
         const list = [];
         for (const item in DS) {
             const dataAgr = DS[item];
             await this.cacheService.set(item, dataAgr);
             list.push(dataAgr.options.database);
             const ds = await this.cacheService.get(item);
-            console.log('Cache', item, '->', ds.options.database);
+            console.log('✅  Cache:', item, '->', ds.options.database);
         }
         return list;
     }
@@ -53,11 +53,7 @@ let AgregadoresContronller = class AgregadoresContronller {
         return { id: newDS.id, name: newDS.DS.options.database };
     }
     async reload() {
-        const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
-            where: {
-                isAgr: 1,
-            },
-        });
+        const agregadores = await this.agreadoresService.all();
         let listDS;
         for (const index in agregadores) {
             const item = agregadores[index];
@@ -83,11 +79,7 @@ let AgregadoresContronller = class AgregadoresContronller {
         }
     }
     async status() {
-        const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
-            where: {
-                isAgr: 1,
-            },
-        });
+        const agregadores = await this.agreadoresService.all();
         let listDS;
         for (const index in agregadores) {
             const item = agregadores[index];
@@ -111,15 +103,12 @@ let AgregadoresContronller = class AgregadoresContronller {
         return { listStatus: listDS };
     }
     async restartConnection() {
-        const agregadores = await sitran_dataSource_1.default.getRepository(agregador_entity_1.default).find({
-            where: {
-                isAgr: 1,
-            },
-        });
+        const agregadores = await this.agreadoresService.all();
         let listDS;
         for (const index in agregadores) {
             const item = agregadores[index];
             const id = item.id.toString();
+            console.log('id', id);
             const ds = await this.cacheService.get(id);
             if (ds) {
                 try {
@@ -141,7 +130,7 @@ let AgregadoresContronller = class AgregadoresContronller {
                 return { message: 'Error in reset DB' };
             }
         }
-        return { message: 'Not DB Reset' };
+        return { message: 'Not Reset, Connection is stable' };
     }
 };
 __decorate([
@@ -182,8 +171,7 @@ AgregadoresContronller = __decorate([
     (0, common_1.Controller)('agregadores'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(1, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
-    __param(2, (0, common_1.Inject)('DS')),
-    __metadata("design:paramtypes", [agregadores_service_1.AgregadoresService, Object, Object])
+    __metadata("design:paramtypes", [agregadores_service_1.AgregadoresService, Object])
 ], AgregadoresContronller);
 exports.AgregadoresContronller = AgregadoresContronller;
 //# sourceMappingURL=agregadores.controller.js.map

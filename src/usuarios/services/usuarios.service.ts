@@ -3,11 +3,17 @@ import { Injectable } from '@nestjs/common';
 import SitranDS from '../../db/config/sitran_dataSource';
 import Usuarios from '../../db/sitran/models/usuarios.entity';
 import 'dotenv/config';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsuariosService {
+  constructor(
+    @InjectRepository(Usuarios)
+    private userRepository: Repository<Usuarios>,
+  ) {}
   async getUsuario(user: LoginUsuarioDto): Promise<Usuarios> {
-    return await SitranDS.getRepository(Usuarios).findOne({
+    return await this.userRepository.findOne({
       where: { login: user.login },
       relations: ['status', 'profile', 'profile.department', 'agregador'],
     });

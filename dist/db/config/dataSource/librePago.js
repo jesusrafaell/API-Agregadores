@@ -21,7 +21,7 @@ const LibrepagoDS = new typeorm_1.DataSource({
     entities: parmetros_config_1.entitiesAgregadores,
     migrations: parmetros_config_1.migrationsAgregadores,
     subscribers: ['./db/subscriber/**/*.ts'],
-    migrationsTableName: 'migrations_api_v1',
+    migrationsTableName: 'migrations_api_v2',
 });
 exports.default = LibrepagoDS;
 //# sourceMappingURL=librePago.js.map

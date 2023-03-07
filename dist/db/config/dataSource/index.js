@@ -55,6 +55,7 @@ const createNewDatabase = async (dbName) => {
 exports.createNewDatabase = createNewDatabase;
 const createTablesDatabase = async (dbName) => {
     const pool = new sql.ConnectionPool(Object.assign(Object.assign({}, config), { database: dbName }));
+    console.log(pool);
 };
 exports.createTablesDatabase = createTablesDatabase;
 const createTablesAgregador = (host, db) => {

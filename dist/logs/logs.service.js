@@ -8,14 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogsService = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const general_logs_api_entity_1 = require("../db/global/models/general_logs_api.entity");
+const typeorm_2 = require("@nestjs/typeorm");
 let LogsService = class LogsService {
-    constructor(jwtService) {
+    constructor(jwtService, generalLogRepository) {
         this.jwtService = jwtService;
+        this.generalLogRepository = generalLogRepository;
         this.getDataTokenCache = async (headerToken, req, cacheService) => {
             try {
                 const token = headerToken.replace('Bearer ', '');
@@ -49,6 +55,20 @@ let LogsService = class LogsService {
     async saveLogsToken(log) {
         console.log(log);
     }
+    async saveLogsSitran(log) {
+        const { id, method, path, msg } = log;
+        const dataLog = {
+            id_user: id,
+            descript: `[method:${method}]::[path:${path}]::[msg:${msg}]`,
+            id_origin_logs: 1,
+        };
+        try {
+            await this.generalLogRepository.save(dataLog);
+        }
+        catch (err) {
+            console.log({ msg: `Error en guardar en log`, log: dataLog });
+        }
+    }
     async saveLogs(log, DS) {
         const { id, method, path, msg } = log;
         const dataLog = {
@@ -66,7 +86,9 @@ let LogsService = class LogsService {
 };
 LogsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService])
+    __param(1, (0, typeorm_2.InjectRepository)(general_logs_api_entity_1.default)),
+    __metadata("design:paramtypes", [jwt_1.JwtService,
+        typeorm_1.Repository])
 ], LogsService);
 exports.LogsService = LogsService;
 //# sourceMappingURL=logs.service.js.map

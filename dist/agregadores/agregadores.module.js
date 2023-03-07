@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AgregadoresModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const agregador_entity_1 = require("../db/sitran/models/agregador.entity");
 const logs_module_1 = require("../logs/logs.module");
 const agregadores_controller_1 = require("./agregadores.controller");
 const agregadores_service_1 = require("./agregadores.service");
@@ -15,7 +17,7 @@ let AgregadoresModule = class AgregadoresModule {
 };
 AgregadoresModule = __decorate([
     (0, common_1.Module)({
-        imports: [logs_module_1.LogsModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([agregador_entity_1.default]), logs_module_1.LogsModule],
         controllers: [agregadores_controller_1.AgregadoresContronller],
         providers: [agregadores_service_1.AgregadoresService],
         exports: [agregadores_service_1.AgregadoresService],
