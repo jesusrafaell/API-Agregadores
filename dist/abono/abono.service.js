@@ -28,6 +28,7 @@ let AbonoService = class AbonoService {
                 message: '',
             };
             info.message = `${commerce.comerRif} Terminal creado`;
+            info.terminal = terminal;
             return info;
         }
         catch (e) {

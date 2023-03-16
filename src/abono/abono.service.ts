@@ -47,6 +47,7 @@ export class AbonoService {
 
       //console.log('creado el abono', abonosSaves);
       info.message = `${commerce.comerRif} Terminal creado`;
+      info.terminal = terminal;
       return info;
     } catch (e) {
       console.log('Abono error:', e);
