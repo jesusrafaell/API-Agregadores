@@ -18,6 +18,7 @@ import { MyCacheModule } from './cache/cache.module';
 
 import 'dotenv/config';
 import { ModelPosModule } from './ModeloPos/modeloPos.module';
+import Type_pos from './db/sitran/models/ModelPos.entity';
 const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } =
   process.env;
 
@@ -51,6 +52,7 @@ const { DB_HOST_SITRAN, DB_USER_SITRAN, DB_PASS_SITRAN, DB_DATA_SITRAN } =
           Roles,
           general_logs_api,
           origin_logs_api,
+          Type_pos,
         ],
         migrationsTableName: 'migrations_api_v1',
       }),

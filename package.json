@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "config": {
-    "env": ".env.development"
+    "env": ".env"
   },
   "scripts": {
     "prebuild": "rimraf dist",

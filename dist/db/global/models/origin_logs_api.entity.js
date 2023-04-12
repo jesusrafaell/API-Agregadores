@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", Date)
 ], origin_logs_api.prototype, "updatedAt", void 0);
 origin_logs_api = __decorate([
-    (0, typeorm_1.Entity)({ synchronize: true })
+    (0, typeorm_1.Entity)({ synchronize: false })
 ], origin_logs_api);
 exports.default = origin_logs_api;
 //# sourceMappingURL=origin_logs_api.entity.js.map

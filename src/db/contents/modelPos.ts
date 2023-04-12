@@ -1,13 +1,13 @@
 import { DataSource } from 'typeorm';
-import ModelPos from '../models/ModelPos.entity';
+import ModelPos from '../sitran/models/ModelPos.entity';
 
 export const list: ModelPos[] = [
-  {
-    Modelo: 'Modelo 1',
-  },
-  {
-    Modelo: 'Modelo 2',
-  },
+  // {
+  //   modelo: 'Modelo 1',
+  // },
+  // {
+  //   modelo: 'Modelo 2',
+  // },
 ];
 
 const modelPos = async (db: DataSource): Promise<void> => {

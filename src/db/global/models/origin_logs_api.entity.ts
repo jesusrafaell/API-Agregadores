@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import general_logs_api from './general_logs_api.entity';
 
-@Entity({ synchronize: true })
+@Entity({ synchronize: false })
 export default class origin_logs_api {
   @PrimaryGeneratedColumn()
   id?: number;

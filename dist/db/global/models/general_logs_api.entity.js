@@ -39,7 +39,7 @@ __decorate([
     __metadata("design:type", Date)
 ], general_logs_api.prototype, "updatedAt", void 0);
 general_logs_api = __decorate([
-    (0, typeorm_1.Entity)('general_logs_api', { synchronize: true })
+    (0, typeorm_1.Entity)('general_logs_api', { synchronize: false })
 ], general_logs_api);
 exports.default = general_logs_api;
 //# sourceMappingURL=general_logs_api.entity.js.map

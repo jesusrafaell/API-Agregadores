@@ -5,11 +5,8 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
-  Post,
   Req,
   Get,
-  Put,
-  Param,
   Inject,
   CACHE_MANAGER,
 } from '@nestjs/common';
@@ -20,7 +17,7 @@ import { LogsService } from '../logs/logs.service';
 
 import { Cache } from 'cache-manager';
 import { ModelPosService } from './modeloPos.service';
-import ModelPos from '../db/models/ModelPos.entity';
+import ModelPos from '../db/sitran/models/ModelPos.entity';
 
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
@@ -42,6 +39,6 @@ export class ModelPosController {
       req,
       this.cacheService,
     );
-    return this._ModelPos.getAllModelPos(header.DS);
+    return this._ModelPos.getAllModelPos(header.idAgr);
   }
 }

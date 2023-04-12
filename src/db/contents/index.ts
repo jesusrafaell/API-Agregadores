@@ -41,7 +41,7 @@ SitranDS.initialize()
         //llamda al content
         const DS: DataSource = Object.values(listDS)[i];
         console.log(DS.options.database);
-        await modelPos(DS);
+        // await modelPos(DS);
       }
     } catch (err) {
       console.log(err);

@@ -5,7 +5,6 @@ const barrProcess_1 = require("../../utils/barrProcess");
 const dataSource_1 = require("../config/dataSource");
 const sitran_dataSource_1 = require("../config/sitran_dataSource");
 const agregador_entity_1 = require("../sitran/models/agregador.entity");
-const modelPos_1 = require("./modelPos");
 sitran_dataSource_1.default.initialize()
     .then(async (DS) => {
     try {
@@ -34,7 +33,6 @@ sitran_dataSource_1.default.initialize()
         for (let i = 0; i < Object.keys(listDS).length; i++) {
             const DS = Object.values(listDS)[i];
             console.log(DS.options.database);
-            await (0, modelPos_1.default)(DS);
         }
     }
     catch (err) {

@@ -41,9 +41,9 @@ let TerminalsService = class TerminalsService {
         console.log('Afiliado', Number(afiliado.cxaCodAfi));
         if (comerCuentaBanco)
             await this.abonoService.validAccountNumber(comerCuentaBanco, DS);
-        const modelo = await this.modelService.validModel(id_modelo, DS);
+        const modelo = await this.modelService.validModel(id_modelo, header.idAgr);
         if (!modelo) {
-            throw new common_1.BadRequestException(`No existe el modelo Codigo: [${id_modelo}] en ${header.agr}`);
+            throw new common_1.BadRequestException(`No existe el [modelo: ${id_modelo}] en ${header.agr}`);
         }
         const getSerial = await this.serialService.getSerial(serial, DS);
         if (getSerial) {
@@ -54,11 +54,11 @@ let TerminalsService = class TerminalsService {
         try {
             const resPref = await axios_1.default
                 .post(`${REACT_APP_APIURL_APT}pref`, {
-                name: header.agr,
+                id_agregador: header.idAgr,
             }, { headers: { authorization: header.token } })
                 .catch(() => {
                 throw new common_1.BadRequestException({
-                    message: `El prefijo ${prefijo} no es valido para ${header.agr}`,
+                    message: `APT: El prefijo ${prefijo} no es valido para ${header.agr}`,
                 });
             });
             const prefijos = resPref.data.Data;
@@ -74,6 +74,7 @@ let TerminalsService = class TerminalsService {
                 afiliado: `${Number(afiliado.cxaCodAfi)}`,
                 cantidad: 1,
                 prefijo,
+                id_type_pos: id_modelo,
             }, { headers: { authorization: header.token } })
                 .catch((err) => {
                 console.log('Error APT:', err);
@@ -103,6 +104,7 @@ let TerminalsService = class TerminalsService {
                     terminales: termAPt,
                 });
             }
+            console.log('Abono saved', terminal);
             const saveSerial = await this.serialService.saveSerialTerminal(terminal, serial, id_modelo, DS);
             console.log('Serial:', saveSerial.serial, saveSerial.id_modelo, saveSerial.terminal);
             if (abono) {

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import origin_logs_librepago from './origin_logs_api.entity';
 
-@Entity('general_logs_api', { synchronize: true })
+@Entity('general_logs_api', { synchronize: false })
 export default class general_logs_api {
   @PrimaryGeneratedColumn()
   id?: number;
